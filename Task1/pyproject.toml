@@ -1,0 +1,10 @@
+[project]
+name = "smart-pos"
+version = "1.0.0"
+description = "A POS system for retail store"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "bcrypt>=5.0.0",
+    "pyside6>=6.10.2",
+]

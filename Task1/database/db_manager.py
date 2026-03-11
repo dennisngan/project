@@ -44,29 +44,52 @@ class DatabaseManager:
             """
             CREATE TABLE IF NOT EXISTS categories
             (
-                category_id   INTEGER PRIMARY KEY AUTOINCREMENT,
+                category_id INTEGER PRIMARY KEY AUTOINCREMENT,
                 name TEXT NOT NULL UNIQUE
             );
 
             CREATE TABLE IF NOT EXISTS products
             (
-                product_id             INTEGER PRIMARY KEY AUTOINCREMENT,
+                product_id  INTEGER PRIMARY KEY AUTOINCREMENT,
                 name           TEXT    NOT NULL,
                 price          REAL    NOT NULL CHECK (price >= 0),
                 cost_price     REAL    NOT NULL CHECK (cost_price >= 0),
                 stock_quantity INTEGER NOT NULL DEFAULT 0 CHECK (stock_quantity >= 0),
-                category_id    INTEGER REFERENCES categories (id) ON DELETE SET NULL,
+                category_id INTEGER REFERENCES categories (category_id) ON DELETE SET NULL,
                 is_active      INTEGER NOT NULL DEFAULT 1
                 );
 
             CREATE TABLE IF NOT EXISTS users
             (
-                user_id            INTEGER PRIMARY KEY AUTOINCREMENT,
+                user_id INTEGER PRIMARY KEY AUTOINCREMENT,
                 username      TEXT NOT NULL UNIQUE,
                 password_hash TEXT NOT NULL,
                 full_name     TEXT NOT NULL,
                 role          TEXT NOT NULL CHECK (role IN ('cashier', 'manager'))
-                );           
+                );
+
+            CREATE TABLE IF NOT EXISTS transactions
+            (
+                transaction_id  INTEGER PRIMARY KEY AUTOINCREMENT,
+                timestamp       TEXT    NOT NULL DEFAULT (datetime('now', 'localtime')),
+                cashier_id      INTEGER REFERENCES users (user_id) ON DELETE SET NULL,
+                total_amount    REAL    NOT NULL,
+                payment_type    TEXT    NOT NULL,
+                amount_tendered REAL,
+                change_due      REAL,
+                card_last_four  TEXT,
+                is_void         INTEGER NOT NULL DEFAULT 0
+                );
+
+            CREATE TABLE IF NOT EXISTS transaction_items
+            (
+                transaction_item_id INTEGER PRIMARY KEY AUTOINCREMENT,
+                transaction_id      INTEGER NOT NULL REFERENCES transactions (transaction_id) ON DELETE CASCADE,
+                product_id          INTEGER REFERENCES products (product_id) ON DELETE SET NULL,
+                quantity            INTEGER NOT NULL,
+                unit_price          REAL    NOT NULL,
+                line_total          REAL    NOT NULL
+                );
             """
         )
 
@@ -98,6 +121,10 @@ class DatabaseManager:
         """Close the database connection and reset the singleton instance."""
         self._connection.close()
         DatabaseManager._instance = None
+
+    def rollback(self):
+        """Rollback the current transaction."""
+        self._connection.rollback()
 
 
 """Test the DatabaseManager singleton behavior."""

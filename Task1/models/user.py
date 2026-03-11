@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+import sqlite3
+
 from constant.enums import UserRole
 from constant.permission import has_permission, Permission
 from models.base import BaseModel
@@ -35,7 +37,7 @@ class User(BaseModel):
         return self.user_id == other.user_id
 
     @classmethod
-    def from_db_row(cls, row) -> User:
+    def from_db_row(cls, row: sqlite3.Row) -> User:
         role = row["role"]
 
         if role == UserRole.MANAGER:
@@ -65,15 +67,6 @@ class User(BaseModel):
     def display_name(self) -> str:
         """Display first name for compact UI display"""
         return self.full_name.split()[0] if self.full_name else self.username
-
-    def to_dict(self) -> dict:
-        return {
-            "user_id": self.user_id,
-            "username": self.username,
-            "full_name": self.full_name,
-            "role": self._role.value
-        }
-
 
 class Manager(User):
     def __init__(

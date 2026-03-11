@@ -1,13 +1,17 @@
+import sqlite3
 from abc import ABC, abstractmethod
+from typing import Self
 
 
 class BaseModel(ABC):
-    """Enforces and to_dict() contract on subclasses."""
+    """Abstract base class for all models. Enforces that subclasses implement from_db_row()."""
 
+    @classmethod
     @abstractmethod
-    def to_dict(self) -> dict:
-        """Serialize the object to a plain dictionary."""
+    def from_db_row(cls, row: sqlite3.Row) -> Self:
+        """
+        Enforce that subclasses implement a from_db_row() factory method.
+        This method should take a database row (e.g. sqlite3.Row) and return an instance of the model.
+        """
         pass
 
-    def __str__(self):
-        return f"{self.__class__.__name__}({self.to_dict()})"

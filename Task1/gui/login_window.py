@@ -97,11 +97,6 @@ class LoginWindow(QWidget):
         # Sign In button
         self._login_btn = QPushButton("Sign In")
         self._login_btn.setMinimumHeight(46)
-        # self._login_btn.setStyleSheet(
-        #     f"font-size: 15px; font-weight: 600; "
-        #     f"background-color: {Colors.ACCENT}; color: {Colors.TEXT_ON_ACCENT}; "
-        #     f"border-radius: 10px; border: none;"
-        # )
         self._login_btn.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Fixed)
         self._login_btn.clicked.connect(self._on_login)
         card_layout.addWidget(self._login_btn)

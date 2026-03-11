@@ -208,7 +208,7 @@ class StyleEngine:
         /* ── Table Widget ── */
         QTableWidget {{
             background-color: {c.BG_SURFACE};
-            alternate-background-color: {c.BG_PRIMARY};
+            alternate-background-color: {c.BG_TERTIARY};
             color: {c.TEXT};
             border: 1px solid {c.BORDER};
             border-radius: 8px;
@@ -217,7 +217,7 @@ class StyleEngine:
             selection-color: {c.TEXT};
         }}
         QTableWidget::item {{
-            padding: 6px 10px;
+            padding: 2px 5px;
             border: none;
             min-height: 40px;
         }}
@@ -391,6 +391,35 @@ class StyleEngine:
         QDateEdit:focus {{
             border: 2px solid {c.ACCENT};
         }}
+        
+         /* ── Scroll Bar ── */
+        QScrollArea[scrollbar="true"] {{
+                border: none;
+        }}
+        QScrollArea[scrollbar="true"] QScrollBar:vertical {{
+                background: transparent;
+            width: 8px;
+            margin: 4px 2px 4px 2px;
+        }}
+        QScrollArea[scrollbar="true"] QScrollBar::handle:vertical {{
+                background: rgba(0, 0, 0, 0.35);
+            border-radius: 4px;
+            min-height: 30px;
+        }}
+        QScrollArea[scrollbar="true"] QScrollBar::handle:vertical:hover {{
+                background: rgba(0, 0, 0, 0.55);
+        }}
+        QScrollArea[scrollbar="true"] QScrollBar::handle:vertical:pressed {{
+                background: rgba(0, 0, 0, 0.65);
+        }}
+        QScrollArea[scrollbar="true"] QScrollBar::add-line:vertical,
+        QScrollArea[scrollbar="true"] QScrollBar::sub-line:vertical {{
+                height: 0px;
+        }}
+        QScrollArea[scrollbar="true"] QScrollBar::add-page:vertical,
+        QScrollArea[scrollbar="true"] QScrollBar::sub-page:vertical {{
+                background: transparent;
+        }}
 
         /* ── Radio Button ── */
         QRadioButton {{
@@ -467,6 +496,11 @@ class StyleEngine:
             "font-weight: bold;"
             'font-family: "SF Pro Display", "Segoe UI", Arial;'
         )
+    @staticmethod
+    def get_mono_font() -> QFont:
+        font = QFont("Consolas")
+        font.setPointSize(10)
+        return font
 
     @staticmethod
     @lru_cache(maxsize=16)
@@ -474,7 +508,7 @@ class StyleEngine:
         c = Colors
         return (
             f"QFrame {{ background-color: {c.BG_SURFACE}; border-radius: 12px; "
-            f"border: 1px solid {c.BORDER}; }}"
-            f"QFrame:hover {{ border: 1.5px solid {c.ACCENT}; "
+            f"border: 1px solid {category_color}; }}"
+            f"border:hover {{ border: 10.5px solid {c.ACCENT}; "
             f"background-color: {c.ACCENT_LIGHT}; }}"
             f"QFrame QLabel {{ background: transparent; border: none; }}")

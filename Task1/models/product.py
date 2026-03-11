@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+import sqlite3
+
 from models.base import BaseModel
 
 
@@ -45,9 +47,9 @@ class Product(BaseModel):
         return f"${amount:,.1f}"
 
     @classmethod
-    def from_db_row(cls, row) -> Product:
-        return Product(
-            product_id=row["id"],
+    def from_db_row(cls, row: sqlite3.Row) -> Product:
+        return cls(
+            product_id=row["product_id"],
             name=row["name"],
             price=row["price"],
             cost_price=row["cost_price"],
@@ -56,13 +58,3 @@ class Product(BaseModel):
             is_active=bool(row["is_active"]),
         )
 
-    def to_dict(self) -> dict:
-        return {
-            "product_id": self.product_id,
-            "name": self.name,
-            "price": self.price,
-            "cost_price": self.cost_price,
-            "stock_quantity": self.stock_quantity,
-            "category_id": self.category_id,
-            "is_active": self.is_active,
-        }

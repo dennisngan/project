@@ -11,7 +11,7 @@ class UserService:
 
     def get_all_user(self) -> list[User]:
         """Return all users ordered by role then name."""
-        sql = "SELECT * FROM users ORDER BY role, name"
+        sql = "SELECT * FROM users"
         rows = self._db.fetchall(sql)
         return [User.from_db_row(row) for row in rows]
 

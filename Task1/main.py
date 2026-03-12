@@ -32,9 +32,8 @@ class App:
 
         if self._login_window is None:
             self._login_window = LoginWindow(self._db)
+            self._login_window.login_success.connect(self._on_login_success)
         self._login_window.show()
-
-        self._login_window.login_success.connect(self._on_login_success)
 
     def _on_login_success(self, user: User):
         self._current_user = user

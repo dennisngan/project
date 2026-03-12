@@ -36,6 +36,9 @@ class User(BaseModel):
             return NotImplemented
         return self.user_id == other.user_id
 
+    def __hash__(self) -> int:
+        return hash(self.user_id)
+
     @classmethod
     def from_db_row(cls, row: sqlite3.Row) -> User:
         role = row["role"]

@@ -509,6 +509,6 @@ class StyleEngine:
         return (
             f"QFrame {{ background-color: {c.BG_SURFACE}; border-radius: 12px; "
             f"border: 1px solid {category_color}; }}"
-            f"border:hover {{ border: 10.5px solid {c.ACCENT}; "
+            f"QFrame:hover {{ border: 2px solid {c.ACCENT}; "
             f"background-color: {c.ACCENT_LIGHT}; }}"
             f"QFrame QLabel {{ background: transparent; border: none; }}")

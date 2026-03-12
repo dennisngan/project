@@ -57,7 +57,7 @@ class ProductCard(QFrame):
             stock_text = f"#{self._product.product_id} · Out of Stock"
             stock_style = (
                 f"color: {Colors.DANGER}; background-color: {Colors.DANGER_LIGHT}; "
-                f"font-size: 10px; border-radius: 6px; padding: 1px 6px; background: transparent;"
+                f"font-size: 10px; border-radius: 6px; padding: 1px 6px;"
             )
         elif self._product.stock_quantity <= LOW_STOCK_THRESHOLD:
             stock_text = f"#{self._product.product_id} · Low: {self._product.stock_quantity}"
@@ -92,8 +92,6 @@ class ProductCard(QFrame):
         if pressed:
             self.setStyleSheet(StyleEngine.product_card_stylesheet(cat_color) + """
                 QFrame {
-                    transform: scale(0.97);
-                    opacity: 0.85;
                     border: 2px solid rgba(0,0,0,0.18);
                     background-color: rgba(0,0,0,0.06);
                 }

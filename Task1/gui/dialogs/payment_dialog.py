@@ -2,7 +2,7 @@ from PySide6.QtCore import Qt
 from PySide6.QtWidgets import QVBoxLayout, QDialog, QPushButton, QHBoxLayout, QLabel, QFrame, QLineEdit, QStackedWidget
 
 from gui.styles import Colors, StyleEngine
-from gui.widgets.HKDLineEdit import HKDLineEdit
+from gui.widgets.hkd_line_edit import HKDLineEdit
 from models.payment_method import PaymentMethod, CashPayment, CardPayment
 
 
@@ -218,10 +218,11 @@ class PaymentDialog(QDialog):
         if self._cash_btn.isChecked():
             try:
                 tendered = self._tendered_input.numeric_value()
-                if tendered == 0.0 and self._tendered_input.text().strip() == HKDLineEdit._PREFIX.strip():
+                if tendered == 0.0 and self._tendered_input.text().strip() == HKDLineEdit.PREFIX.strip():
                     self._show_error("Please enter the amount tendered.")
                     return
-                payment = CashPayment(self.total_amount, tendered)
+                change_due = tendered - self.total_amount
+                payment = CashPayment(self.total_amount, tendered, change_due)
                 if not payment.process_payment():
                     self._show_error("Amount tendered is less than total due.")
                     return

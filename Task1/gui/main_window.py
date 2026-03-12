@@ -8,7 +8,7 @@ from PySide6.QtWidgets import QMainWindow, QWidget, QVBoxLayout, QLabel, QFrame,
 
 from constant.constants import ROLE_EMOJI
 from database.db_manager import DatabaseManager
-from gui.dialogs.PaymentDialog import PaymentDialog
+from gui.dialogs.payment_dialog import PaymentDialog
 from gui.styles import Colors, StyleEngine
 from gui.widgets.product_card import ProductCard
 from models.category import Category
@@ -408,7 +408,6 @@ class MainWindow(QMainWindow):
     # ── Cart management ─────────────────────────────────────────────────────────
     def _on_product_clicked(self, product_id: int):
         product: Product = next(filter(lambda p: p.product_id == product_id, self._products_cache), None)
-        print(product)
 
         if product is None:
             return
@@ -506,7 +505,7 @@ class MainWindow(QMainWindow):
             QPushButton#cartPlusBtn:pressed { background-color: #007AFF; color: #ffffff; }
         """)
             plus_btn.clicked.connect(
-                lambda _, pid=item.product_id: (self._cart.update_quantity(pid, +1), self._refresh_cart_table())
+                lambda _, pid=item.product_id: self._on_cart_increment(pid)
             )
 
             plus_container = QWidget()
@@ -520,6 +519,19 @@ class MainWindow(QMainWindow):
             self._cart_table.setCellWidget(r, 3, plus_container)
             self._cart_table.setItem(r, 4, total_item)
         self._update_total()
+
+    def _on_cart_increment(self, product_id: int):
+        product: Product = next(filter(lambda p: p.product_id == product_id, self._products_cache), None)
+        if product is None:
+            return
+        cart_item = self._cart.get_item(product_id)
+        current_qty = cart_item.quantity if cart_item else 0
+        if current_qty >= product.stock_quantity:
+            QMessageBox.warning(self, "Out of Stock",
+                                f"Only {product.stock_quantity} of {product.name} in stock.")
+            return
+        self._cart.update_quantity(product_id, +1)
+        self._refresh_cart_table()
 
     def _on_cart_clear(self):
         self._cart.clear()
@@ -536,7 +548,6 @@ class MainWindow(QMainWindow):
         total_amount = self._cart.get_total()
         dialog = PaymentDialog(total_amount, self)
 
-        print("Dialog", dialog)
         if dialog.exec() != QDialog.DialogCode.Accepted:
             return
 
@@ -551,20 +562,18 @@ class MainWindow(QMainWindow):
             payment
         )
 
+        transaction = self.transaction_service.get_transaction(tx_id)
+
         self._cart.clear()
         self._refresh_cart_table()
         self.refresh_products_cache()  # Refresh stock levels after sale
         self._load_products()
-
-        print(f"Transaction {tx_id} completed with payment: {payment}")
 
     # Status bar
     def _update_status(self, count: int = 0):
         self.statusBar().showMessage(
             f"  Products: {count}  available"
         )
-
-
 
     # Clock
     def _start_clock(self):

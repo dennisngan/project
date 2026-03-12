@@ -36,6 +36,9 @@ class Product(BaseModel):
             return NotImplemented
         return self.product_id == other.product_id
 
+    def __hash__(self) -> int:
+        return hash(self.product_id)
+
     def __lt__(self, other) -> bool:
         if not isinstance(other, Product):
             return NotImplemented

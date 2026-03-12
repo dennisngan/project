@@ -50,7 +50,6 @@ class CardPayment(PaymentMethod):
         return (
             f"Card Payment | Total: ${self.total_amount:.1f} | "
             f"Card: **** **** **** {self.card_number_last4} | "
-            f"Gateway Response: {self.payment_gateway_response}"
         )
 
 
@@ -58,9 +57,10 @@ class CashPayment(PaymentMethod):
     """Concrete strategy for cash payments."""
     PAYMENT_TYPE = PaymentType.CASH
 
-    def __init__(self, total_amount: float, amount_tendered: float):
+    def __init__(self, total_amount: float, amount_tendered: float, change_due: float):
         super().__init__(total_amount)
         self.amount_tendered = amount_tendered
+        self.change_due = change_due
 
     def process_payment(self) -> bool:
         if self.amount_tendered < self.total_amount:
@@ -74,9 +74,8 @@ class CashPayment(PaymentMethod):
         return self.PAYMENT_TYPE
 
     def __str__(self) -> str:
-        change = f"${self.change_due:.1f}" if self.change_due is not None else "N/A"
         return (
             f"Cash Payment | Total: HKD${self.total_amount:.1f} | "
             f"Tendered: HKD${self.amount_tendered:.1f} | "
-            f"Change: HKD${change}"
+            f"Change: HKD${self.change_due:.1f}"
         )

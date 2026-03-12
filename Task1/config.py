@@ -14,6 +14,6 @@ CATEGORY_COLORS = {
     "bakery":        "#D97706",   # Amber
     "frozen":        "#8B5CF6",   # Violet
     "household":     "#10B981",   # Emerald
-    "personal Care": "#EC4899",   # Pink
+    "personal care": "#EC4899",   # Pink
     "other":         "#9CA3AF",   # Cool gray
 }

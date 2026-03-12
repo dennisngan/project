@@ -32,3 +32,7 @@ class HKDLineEdit(QLineEdit):
             return float(self.text()[len(self._PREFIX):])
         except ValueError:
             return 0.0
+
+    @property
+    def PREFIX(self):
+        return self._PREFIX

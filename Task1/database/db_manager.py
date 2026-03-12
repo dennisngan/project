@@ -86,6 +86,7 @@ class DatabaseManager:
                 transaction_item_id INTEGER PRIMARY KEY AUTOINCREMENT,
                 transaction_id      INTEGER NOT NULL REFERENCES transactions (transaction_id) ON DELETE CASCADE,
                 product_id          INTEGER REFERENCES products (product_id) ON DELETE SET NULL,
+                product_name        TEXT    NOT NULL,
                 quantity            INTEGER NOT NULL,
                 unit_price          REAL    NOT NULL,
                 line_total          REAL    NOT NULL
@@ -106,7 +107,7 @@ class DatabaseManager:
     def commit(self):
         self._connection.commit()
 
-    def fetchall(self, sql: str, params: str = ()) -> list[sqlite3.Row]:
+    def fetchall(self, sql: str, params: tuple = ()) -> list[sqlite3.Row]:
         return self._connection.execute(sql, params).fetchall()
 
     def fetchone(self, sql: str, params: tuple = ()) -> sqlite3.Row | None:

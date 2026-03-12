@@ -12,7 +12,7 @@ class CartItem:
 
     @property
     def line_total(self) -> float:
-        return round(self.unit_price * self.quantity, 1)
+        return round(self.unit_price * self.quantity, 2)
 
     def __str__(self) -> str:
         return f"{self.name} x{self.quantity} @ ${self.unit_price:.1f} = ${self.line_total:.1f}"

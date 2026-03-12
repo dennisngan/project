@@ -2,55 +2,65 @@ import sqlite3
 from datetime import datetime
 from typing import Self
 
+from constant.enums import PaymentType
 from models.base import BaseModel
-from models.payment_method import PaymentMethod
+from models.payment_method import PaymentMethod, CashPayment, CardPayment
+from models.transaction_item import TransactionItem
 
 
 class Transaction(BaseModel):
     """
-    Represents a completed transaction in the POS system. Contains details about the transaction, including:
-    - transaction_id: Unique identifier for the transaction
-    - timestamp: Date and time when the transaction occurred
-    - cashier_id: ID of the cashier who processed the transaction
-    - cashier_name: Name of the cashier (for easier reporting)
-    - items: List of items sold in the transaction (snapshots of CartItem)
-    - total_amount: Total amount of the transaction
-    - payment: PaymentMethod instance representing how the transaction was paid
+    Represents a completed sale transaction.
+    Immutable record created after payment is successful.
     """
-
-    @classmethod
-    def from_db_row(cls, row: sqlite3.Row) -> Self:
-        pass
-
     def __init__(
             self,
             transaction_id: int,
             timestamp: str,
             cashier_id: int,
-            cashier_name: str,
-            items: list,  # list[CartItem] snapshots
-            total_amount: float,
             payment: PaymentMethod,
+            items: list[TransactionItem],  # list[CartItem] snapshots
+            is_void: bool
     ):
         super().__init__()
         self.transaction_id = transaction_id
         self.timestamp = timestamp or datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         self.cashier_id = cashier_id
-        self.cashier_name = cashier_name
-        self.items = list(items)
-        self.total_amount = total_amount
         self.payment = payment
+        self.items = list(items)
+        self.is_void = is_void
 
-    def validate(self) -> bool:
-        return self.total_amount >= 0 and len(self.items) > 0
+    @classmethod
+    def from_db_row(cls, row: sqlite3.Row) -> Self:
+        """
+        create a Transaction instance from a database row (sqlite3.Row).
+        items will be loaded separately since they require a join query.
+        """
+        payment_type = row["payment_type"]
+        total_amount = row["total_amount"]
+        change_due = row["change_due"]
+        payment: PaymentMethod | None = None
+        if payment_type == PaymentType.CARD:
+            payment = CardPayment(total_amount, row["card_last_four"] or "")
+        elif payment_type == PaymentType.CASH:
+            amount_tendered = row["amount_tendered"]
+            payment = CashPayment(total_amount, amount_tendered, change_due)
+        return cls(
+            transaction_id=row["transaction_id"],
+            timestamp=row["timestamp"],
+            cashier_id=row["cashier_id"],
+            payment=payment,
+            items=[],
+            is_void=row["is_void"] == 1,
+        )
 
     def __str__(self) -> str:
         return (
             f"Transaction #{self.transaction_id} | "
             f"{self.timestamp} | "
-            f"Total: ${self.total_amount:.2f} | "
+            f"Total: ${self.payment.total_amount:.1f} | "
             f"{self.payment}"
         )
 
     def __repr__(self) -> str:
-        return f"<Transaction id={self.transaction_id} total={self.total_amount:.2f}>"
+        return f"<Transaction id={self.transaction_id} total={self.payment.total_amount:.1f}>"

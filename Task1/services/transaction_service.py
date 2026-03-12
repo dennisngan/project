@@ -1,7 +1,8 @@
 from __future__ import annotations
 
 from database.db_manager import DatabaseManager
-from models.transaction import PaymentMethod
+from models.transaction import PaymentMethod, Transaction
+from models.transaction_item import TransactionItem
 from services.cart_service import Cart
 from services.product_service import ProductService
 
@@ -47,15 +48,18 @@ class TransactionService:
 
             """ Insert line items and update stock in a single transaction. """
             for item in cart.get_items():
+                product = self._product_service.get_product_by_id(item.product_id)
                 self._db.execute(
                     """INSERT INTO transaction_items (transaction_id,
                                                       product_id,
+                                                      product_name,
                                                       quantity,
                                                       unit_price,
                                                       line_total)
-                       VALUES (?, ?, ?, ?, ?)""",
+                       VALUES (?, ?, ?, ?, ?, ?)""",
                     (tx_id,
-                     item.product_id,
+                     product.product_id,
+                     product.name,
                      item.quantity,
                      item.unit_price,
                      item.line_total
@@ -69,10 +73,53 @@ class TransactionService:
             raise
         return tx_id
 
-    def void_transaction(self, transaction_id: int) -> None:
-        """Mark a transaction as voided."""
-        self._db.execute(
-            "UPDATE transactions SET is_void = 1 WHERE id = ?",
+    def get_transaction(self, transaction_id: int) -> Transaction:
+        """Return transaction header details for a given transaction ID."""
+        row = self._db.fetchone(
+            """SELECT *
+               FROM transactions
+               WHERE transaction_id = ?""",
             (transaction_id,),
         )
-        self._db.commit()
+        transaction = Transaction.from_db_row(row) if row else None
+        if not transaction:
+            return None
+        transaction.items = self.get_items_for_transaction(transaction_id)
+        return transaction
+
+    def get_items_for_transaction(self, transaction_id: int) -> list[TransactionItem]:
+        rows = self._db.fetchall(
+            """SELECT ti.transaction_item_id,
+                      ti.transaction_id,
+                      ti.product_id,
+                      p.name,
+                      ti.quantity,
+                      ti.unit_price,
+                      ti.line_total
+               FROM transaction_items ti
+                        LEFT JOIN products p ON ti.product_id = p.product_id
+               WHERE ti.transaction_id = ?""",
+            (transaction_id,),
+        )
+        return [TransactionItem.from_db_row(row) for row in rows]
+
+    def void_transaction(self, transaction_id: int) -> None:
+        """Mark a transaction as voided and restore deducted stock."""
+        try:
+            items = self._db.fetchall(
+                "SELECT product_id, quantity FROM transaction_items WHERE transaction_id = ?",
+                (transaction_id,),
+            )
+            for item in items:
+                self._db.execute(
+                    "UPDATE products SET stock_quantity = stock_quantity + ? WHERE product_id = ?",
+                    (item["quantity"], item["product_id"]),
+                )
+            self._db.execute(
+                "UPDATE transactions SET is_void = 1 WHERE transaction_id = ?",
+                (transaction_id,),
+            )
+            self._db.commit()
+        except Exception:
+            self._db.rollback()
+            raise

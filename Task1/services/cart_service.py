@@ -1,3 +1,5 @@
+import copy
+
 from models.cart_item import CartItem
 
 
@@ -40,8 +42,8 @@ class Cart:
         self.__items.clear()
 
     def get_items(self) -> list[CartItem]:
-        """Return a shallow copy of all items (read-only view)."""
-        return list(self.__items)
+        """Return a deep copy of all items to prevent external mutation."""
+        return copy.deepcopy(self.__items)
 
     def get_item(self, product_id: int) -> CartItem | None:
         for item in self.__items:

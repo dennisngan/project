@@ -42,18 +42,20 @@ class ProductService:
         return self.get_product_by_id(product_id)
 
     def update_stock(self, product_id: int, quantity_to_deduct: int, commit: bool = False) -> Product:
-        """Deduct stock for a product. Raises ValueError if insufficient stock."""
-        product = self.get_product_by_id(product_id)
-        if product is None:
-            raise ValueError(f"Product {product_id} not found.")
-        if product.stock_quantity < quantity_to_deduct:
+        """Deduct stock for a product atomically. Raises ValueError if insufficient stock."""
+        sql = (
+            "UPDATE products SET stock_quantity = stock_quantity - ? "
+            "WHERE product_id = ? AND stock_quantity >= ?"
+        )
+        cursor = self._db.execute(sql, (quantity_to_deduct, product_id, quantity_to_deduct))
+        if cursor.rowcount == 0:
+            product = self.get_product_by_id(product_id)
+            if product is None:
+                raise ValueError(f"Product {product_id} not found.")
             raise ValueError(
                 f"Insufficient stock for product '{product.name}': "
                 f"available={product.stock_quantity}, requested={quantity_to_deduct}"
             )
-
-        sql = "UPDATE products SET stock_quantity = stock_quantity - ? WHERE product_id = ?"
-        self._db.execute(sql, (quantity_to_deduct, product_id))
         if commit:
             self._db.commit()
         return self.get_product_by_id(product_id)

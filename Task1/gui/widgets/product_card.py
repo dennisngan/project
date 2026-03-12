@@ -77,7 +77,6 @@ class ProductCard(QFrame):
         if event.button() == Qt.MouseButton.LeftButton:
             if self._product.stock_quantity > 0:
                 self._set_pressed(True)
-
         super().mousePressEvent(event)
 
     def mouseReleaseEvent(self, event):
@@ -88,13 +87,8 @@ class ProductCard(QFrame):
         super().mouseReleaseEvent(event)
 
     def _set_pressed(self, pressed: bool):
-        cat_color = get_category_color(self._product)
-        if pressed:
-            self.setStyleSheet(StyleEngine.product_card_stylesheet(cat_color) + """
-                QFrame {
-                    border: 2px solid rgba(0,0,0,0.18);
-                    background-color: rgba(0,0,0,0.06);
-                }
-            """)
-        else:
-            self.setStyleSheet(StyleEngine.product_card_stylesheet(cat_color))
+        self.setProperty("pressed", pressed)
+        # Force Qt to re-evaluate the stylesheet for this widget
+        self.style().unpolish(self)
+        self.style().polish(self)
+        self.update()

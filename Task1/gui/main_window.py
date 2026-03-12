@@ -9,10 +9,12 @@ from PySide6.QtWidgets import QMainWindow, QWidget, QVBoxLayout, QLabel, QFrame,
 from constant.constants import ROLE_EMOJI
 from database.db_manager import DatabaseManager
 from gui.dialogs.payment_dialog import PaymentDialog
+from gui.dialogs.receipt_dialog import ReceiptDialog
 from gui.styles import Colors, StyleEngine
 from gui.widgets.product_card import ProductCard
 from models.category import Category
 from models.product import Product
+from models.receipt import Receipt
 from models.user import User
 from services.cart_service import Cart
 from services.category_cache import CategoryCache
@@ -563,6 +565,10 @@ class MainWindow(QMainWindow):
         )
 
         transaction = self.transaction_service.get_transaction(tx_id)
+
+        receipt = Receipt(transaction)
+        receipt_dialog = ReceiptDialog(str(receipt), transaction.transaction_id)
+        receipt_dialog.exec()
 
         self._cart.clear()
         self._refresh_cart_table()

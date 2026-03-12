@@ -511,4 +511,8 @@ class StyleEngine:
             f"border: 1px solid {category_color}; }}"
             f"QFrame:hover {{ border: 2px solid {c.ACCENT}; "
             f"background-color: {c.ACCENT_LIGHT}; }}"
-            f"QFrame QLabel {{ background: transparent; border: none; }}")
+            f"QFrame[pressed=true] {{ border: 2px solid rgba(0,0,0,0.18); " 
+            f"background-color: rgba(0,0,0,0.06); }}"                     
+            f"QFrame QLabel {{ background: transparent; border: none; }}"
+            f"QFrame:hover QLabel {{ background: transparent; border: none; }}"
+        )

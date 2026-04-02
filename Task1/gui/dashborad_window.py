@@ -81,7 +81,7 @@ class DashboardWindow(QMainWindow):
         # Dynamic sidebar based on user permissions
         if self._user.can_manage_products():
             sidebar_items.append("  📦  Products")
-        sidebar_items.append("  📊  Reports")
+        sidebar_items.append("  📊  Transactions")
         if self._user.can_manage_user():
             sidebar_items.append("  👤  Users")
 
@@ -100,7 +100,7 @@ class DashboardWindow(QMainWindow):
         self._stack = QStackedWidget()
         self._stack.setContentsMargins(0, 0, 0, 0)
         self._stack.addWidget(self._build_products_page())  # index 0
-        self._stack.addWidget(self._build_reports_page())  # index 1
+        self._stack.addWidget(self._build_transaction_page())  # index 1
         self._stack.addWidget(self._build_users_page())  # index 2
         splitter.addWidget(self._stack)
 
@@ -362,11 +362,11 @@ class DashboardWindow(QMainWindow):
             self._product_service.delete_product(product_id)
             self._refresh_products_table()
 
-    # ── Reports page ──────────────────────────────────────────────────────────────
-    def _build_reports_page(self) -> QWidget:
+    # ── Transactions page ──────────────────────────────────────────────────────────────
+    def _build_transaction_page(self) -> QWidget:
         widget = QWidget()
-        widget.setObjectName("reportsPage")
-        widget.setStyleSheet(f"#reportsPage {{ background-color: {Colors.BG_PRIMARY}; }}")
+        widget.setObjectName("transactionsPage")
+        widget.setStyleSheet(f"#transactionsPage {{ background-color: {Colors.BG_PRIMARY}; }}")
         layout = QVBoxLayout(widget)
         layout.setContentsMargins(80, 20, 80, 20)
         layout.setSpacing(12)
@@ -374,9 +374,9 @@ class DashboardWindow(QMainWindow):
         hint = QLabel("Double-click a row to view transaction items.")
         hint.setStyleSheet(f"color: {Colors.TEXT_MUTED}; font-size: 11px;")
         layout.addWidget(hint)
-        self._report_table = self._make_summary_table()
-        self._report_table.doubleClicked.connect(self._on_transaction_double_clicked)
-        layout.addWidget(self._report_table)
+        self._transaction_table = self._make_summary_table()
+        self._transaction_table.doubleClicked.connect(self._on_transaction_double_clicked)
+        layout.addWidget(self._transaction_table)
 
         return widget
 
@@ -420,10 +420,10 @@ class DashboardWindow(QMainWindow):
 
     def _refresh_transactions(self):
         rows: list[Transaction] = self._transaction_service.get_all_transactions()
-        self._report_table.setRowCount(0)
+        self._transaction_table.setRowCount(0)
         for row in rows:
-            r = self._report_table.rowCount()
-            self._report_table.insertRow(r)
+            r = self._transaction_table.rowCount()
+            self._transaction_table.insertRow(r)
             is_void = bool(row.is_void)
 
             payment = row.payment
@@ -443,16 +443,16 @@ class DashboardWindow(QMainWindow):
 
                 if is_void:
                     item.setForeground(QColor(Colors.TEXT_MUTED))
-                self._report_table.setItem(r, col, item)
+                self._transaction_table.setItem(r, col, item)
 
             status_item = QTableWidgetItem("❌Voided" if is_void else "✅Success")
             if is_void:
                 status_item.setForeground(QColor(Colors.DANGER))
-            self._report_table.setItem(r, 6, status_item)
+            self._transaction_table.setItem(r, 6, status_item)
 
     def _on_transaction_double_clicked(self, index):
         """Open a dialog showing transaction details and items when a row is double-clicked."""
-        id_item = self._report_table.item(index.row(), 0)
+        id_item = self._transaction_table.item(index.row(), 0)
         if not id_item:
             return
         transaction_id = int(id_item.text())

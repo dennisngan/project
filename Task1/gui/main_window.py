@@ -1,17 +1,16 @@
-from datetime import datetime
-
 from PySide6.QtCore import Signal, QTimer
 from PySide6.QtGui import Qt
 from PySide6.QtWidgets import QMainWindow, QWidget, QVBoxLayout, QLabel, QFrame, QHBoxLayout, QPushButton, QScrollArea, \
     QGridLayout, QLineEdit, QTableWidget, QHeaderView, QStackedWidget, QMessageBox, QTableWidgetItem, QSizePolicy, \
     QDialog
 
-from constant.constants import ROLE_EMOJI
+from config import STORE_NAME
 from database.db_manager import DatabaseManager
 from gui.dialogs.payment_dialog import PaymentDialog
 from gui.dialogs.receipt_dialog import ReceiptDialog
 from gui.styles import Colors, StyleEngine
 from gui.widgets.product_card import ProductCard
+from gui.widgets.top_bar import TopBar
 from models.category import Category
 from models.product import Product
 from models.receipt import Receipt
@@ -23,7 +22,7 @@ from services.transaction_service import TransactionService
 
 
 class MainWindow(QMainWindow):
-    open_manager_panel = Signal()
+    open_dashboard = Signal()
     logout_requested = Signal()
 
     def __init__(self, user: User, db: DatabaseManager, parent=None):
@@ -36,14 +35,21 @@ class MainWindow(QMainWindow):
         self._active_category: int = 0  # 0 means "All"
         self._category_buttons: dict[int | None, QPushButton] = {}
         self._products_cache: list[Product] = []
-        self.refresh_products_cache()
         self._setup_ui()
-        self._start_clock()
+        self.invalidate_cache()
+
+    def invalidate_cache(self) -> None:
+        """Clear cached data and refresh UI."""
+        self._active_category = 0
+        self._category_buttons = {}
+        self._products_cache = []
+        self.refresh_products_cache()
         self._load_products()
         self._update_status(len(self._products_cache))
 
+
     def _setup_ui(self):
-        self.setWindowTitle("Quick Store - POS System")
+        self.setWindowTitle(f"{STORE_NAME} - POS System")
         self.setFixedSize(1300, 880)
 
         central = QWidget()
@@ -65,109 +71,15 @@ class MainWindow(QMainWindow):
 
     # ── UI construction ─────────────────────────────────────────────────────────
     def _build_top_bar(self) -> QWidget:
-        bar = QFrame()
-        bar.setStyleSheet(
-            f"""
-            QFrame {{
-                background-color: {Colors.BG_SURFACE};
-                border-bottom: 1px solid {Colors.BORDER};
-            }}
-            QFrame > QLabel {{
-                background: transparent;
-                border: none;
-            }}
-            #logo {{
-                color: {Colors.TEXT}; font-size: 15px; font-weight: bold;
-            }}
-            #separator {{
-                color: {Colors.BORDER_STRONG}; font-size: 14px;
-            }}
-            #pos_label {{
-                color: {Colors.TEXT_MUTED}; font-size: 13px;
-            }}
-            #userInfo {{
-                background-color: #E8E8ED;
-                border-radius: 8px;
-                border: 0.5px solid rgba(0, 0, 0, 0.12);
-            }}
-            #userNameLabel {{
-                background-color: transparent;
-                color: {Colors.TEXT}; font-size: 14px; font-weight: 600;
-            }}
-            #userRoleLabel {{
-                background-color: transparent;
-                color: {Colors.TEXT_GREY}; font-size: 10px;
-            }}
-            """
+        mgr_btn_action = (
+            f'⚙️ {self._user.role.value.capitalize()} Panel',
+            self.open_dashboard.emit
         )
-        bar.setFixedHeight(56)
-        layout = QHBoxLayout(bar)
-        layout.setContentsMargins(20, 0, 20, 0)
-        layout.setSpacing(10)
 
-        # App accent dot
-        dot = QLabel()
-        dot.setFixedSize(10, 10)
-        dot.setStyleSheet(
-            f"background-color: {Colors.STATUS_ONLINE}; border-radius: 5px; "
-            f"min-width: 10px; min-height: 10px; border: none;"
-        )
-        layout.addWidget(dot)
+        top_bar = TopBar(user=self._user, actions=[mgr_btn_action])
 
-        logo = QLabel("🏪 Quick Store")
-        logo.setObjectName("logo")
-        layout.addWidget(logo)
-
-        sep = QLabel("|")
-        sep.setObjectName("separator")
-        layout.addWidget(sep)
-
-        pos_lbl = QLabel("POS System")
-        pos_lbl.setObjectName("pos_label")
-        layout.addWidget(pos_lbl)
-        layout.addStretch()
-
-        # User info
-        user_info = QWidget()
-        user_info.setObjectName("userInfo")
-
-        user_layout = QVBoxLayout(user_info)
-        user_layout.setContentsMargins(10, 0, 10, 0)
-        user_layout.setSpacing(0)
-
-        user_layout.addStretch()
-
-        name_label = QLabel(f"👤  {self._user.full_name}")
-        name_label.setObjectName("userNameLabel")
-
-        role_emoji = ROLE_EMOJI.get(self._user.role, "")
-        role_label = QLabel(f'({role_emoji} {self._user.role.value.capitalize()})')
-        role_label.setObjectName("userRoleLabel")
-        role_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
-
-        user_layout.addWidget(name_label)
-        user_layout.addWidget(role_label)
-        user_layout.addStretch()
-
-        layout.addWidget(user_info)
-
-        # Clock
-        self._clock_lbl = QLabel()
-        self._clock_lbl.setStyleSheet(f"color: {Colors.TEXT_MUTED}; font-size: 12px; border: none;")
-        layout.addWidget(self._clock_lbl)
-
-        mgr_btn = QPushButton(f'⚙️ {self._user.role.value.capitalize()} Panel')
-        mgr_btn.setCursor(Qt.PointingHandCursor)
-        mgr_btn.clicked.connect(self.open_manager_panel.emit)
-        layout.addWidget(mgr_btn)
-
-        logout_btn = QPushButton("⏻ Logout")
-        logout_btn.setCursor(Qt.PointingHandCursor)
-        logout_btn.setProperty("danger", "true")
-        logout_btn.clicked.connect(self.logout_requested.emit)
-        layout.addWidget(logout_btn)
-
-        return bar
+        top_bar.logout_requested.connect(self.logout_requested.emit)
+        return top_bar
 
     def _build_product_panel(self) -> QWidget:
         panel = QFrame()
@@ -580,14 +492,3 @@ class MainWindow(QMainWindow):
         self.statusBar().showMessage(
             f"  Products: {count}  available"
         )
-
-    # Clock
-    def _start_clock(self):
-        self._update_clock()
-        timer = QTimer(self)
-        timer.timeout.connect(self._update_clock)
-        timer.start(1_000)  # Update every second
-
-    def _update_clock(self):
-        now = datetime.now().strftime("%b %d, %Y  %H:%M:%S")
-        self._clock_lbl.setText(f"🕐 {now}")

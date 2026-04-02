@@ -1,10 +1,10 @@
-import pathlib
 from datetime import datetime
 
 from PySide6.QtCore import Qt
 from PySide6.QtWidgets import QDialog, QVBoxLayout, QLabel, QScrollArea, QPushButton
 
 from gui.styles import Colors, StyleEngine
+from utils.path_utils import get_app_base_dir
 
 
 class ReceiptDialog(QDialog):
@@ -15,7 +15,9 @@ class ReceiptDialog(QDialog):
         self.setWindowTitle("Receipt")
         self.setFixedSize(450, 700)
         self.setModal(True)
+        self._setup_ui(receipt_text, transaction_id)
 
+    def _setup_ui(self, receipt_text: str, transaction_id: int):
         layout = QVBoxLayout(self)
         layout.setContentsMargins(24, 24, 24, 24)
         layout.setSpacing(12)
@@ -59,17 +61,18 @@ class ReceiptDialog(QDialog):
     def _save_pdf(self, receipt_text: str, transaction_id: int):
         """Save receipt as PDF in receipts/YYYYMMDD/ folder."""
 
-        import os
         try:
             from PySide6.QtPrintSupport import QPrinter
             from PySide6.QtGui import QTextDocument, QPageSize, QPageLayout
             from PySide6.QtCore import QSizeF, QMarginsF
 
+            # Create dated folder and PDF path
             date_str = datetime.now().strftime("%Y%m%d")
-            project_root = pathlib.Path(__file__).parent.parent.parent.resolve()
-            folder = os.path.join(project_root, "receipts", date_str)
-            os.makedirs(folder, exist_ok=True)
-            pdf_path = os.path.join(folder, f"receipt_{transaction_id}.pdf")
+            base_dir = get_app_base_dir()
+            folder = base_dir / "receipts" / date_str
+            folder.mkdir(parents=True, exist_ok=True)
+            pdf_path = folder / f"receipt_{transaction_id}.pdf"
+            print(pdf_path)
 
             RECEIPT_WIDTH_MM = 140.0
             MARGIN_MM = 10.0
@@ -82,7 +85,7 @@ class ReceiptDialog(QDialog):
                     + escaped + '</pre>'
             )
 
-            #Estimate page height using usable width
+            # Estimate page height using usable width
             usable_width_pt = (RECEIPT_WIDTH_MM - 2 * MARGIN_MM) * 72.0 / 25.4
             doc = QTextDocument()
             doc.setHtml(html)
@@ -90,10 +93,10 @@ class ReceiptDialog(QDialog):
             est_height_pt = doc.size().height()
             est_total_mm = est_height_pt * 25.4 / 72.0 + 2 * MARGIN_MM
 
-            #Configure printer with estimated size so we can read its real page rect
+            # Configure printer with estimated size so we can read its real page rect
             printer = QPrinter()
             printer.setOutputFormat(QPrinter.OutputFormat.PdfFormat)
-            printer.setOutputFileName(pdf_path)
+            printer.setOutputFileName(str(pdf_path))
             printer.setPageMargins(
                 QMarginsF(MARGIN_MM, MARGIN_MM, MARGIN_MM, MARGIN_MM),
                 QPageLayout.Unit.Millimeter,
@@ -102,7 +105,7 @@ class ReceiptDialog(QDialog):
                 QPageSize(QSizeF(RECEIPT_WIDTH_MM, est_total_mm), QPageSize.Unit.Millimeter, "Receipt")
             )
 
-            #Re-measure at the ACTUAL printer page width
+            # Re-measure at the ACTUAL printer page width
             actual_page_rect = printer.pageRect(QPrinter.Unit.Point)
             doc.setPageSize(QSizeF(actual_page_rect.width(), 1e9))
             actual_height_pt = doc.size().height()
@@ -118,7 +121,7 @@ class ReceiptDialog(QDialog):
                 QPageLayout.Unit.Millimeter,
             )
 
-            #Set doc page size to exactly match the final printer page rect and print
+            # Set doc page size to exactly match the final printer page rect and print
             final_rect = printer.pageRect(QPrinter.Unit.Point)
             doc.setPageSize(QSizeF(final_rect.width(), final_rect.height()))
             doc.print_(printer)

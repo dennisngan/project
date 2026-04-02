@@ -55,8 +55,7 @@ class DatabaseManager:
                 price          REAL    NOT NULL CHECK (price >= 0),
                 cost_price     REAL    NOT NULL CHECK (cost_price >= 0),
                 stock_quantity INTEGER NOT NULL DEFAULT 0 CHECK (stock_quantity >= 0),
-                category_id    INTEGER REFERENCES categories (category_id) ON DELETE SET NULL,
-                is_active      INTEGER NOT NULL DEFAULT 1
+                category_id    INTEGER REFERENCES categories (category_id) ON DELETE SET NULL
                 );
 
             CREATE TABLE IF NOT EXISTS users

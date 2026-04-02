@@ -1,4 +1,6 @@
+import threading
 from abc import ABC, abstractmethod
+from time import sleep
 
 from constant.enums import PaymentType
 
@@ -39,6 +41,7 @@ class CardPayment(PaymentMethod):
 
     def process_payment(self) -> bool:
         """In a real implementation, this would call an external payment gateway API."""
+        sleep(1)
         self.payment_gateway_response = True
         return self.payment_gateway_response
 

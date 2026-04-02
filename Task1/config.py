@@ -9,7 +9,7 @@ STORE_PHONE = "Tel: +852 1234 5678"
 SALT_ROUNDS = 12
 
 # When stock quantity falls below this level, show a warning in the UI
-LOW_STOCK_THRESHOLD = 5
+LOW_STOCK_THRESHOLD = 10
 
 # Category colors for product cards (category name → hex color code)
 CATEGORY_COLORS = {

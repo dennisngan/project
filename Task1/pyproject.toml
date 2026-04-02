@@ -8,3 +8,8 @@ dependencies = [
     "bcrypt>=5.0.0",
     "pyside6>=6.10.2",
 ]
+
+[dependency-groups]
+dev = [
+    "pyinstaller>=6.19.0",
+]

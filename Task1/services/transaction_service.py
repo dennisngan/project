@@ -72,6 +72,22 @@ class TransactionService:
             self._db.rollback()
             raise
         return tx_id
+    def get_all_transactions(self, limit: int = 50) -> list[Transaction]:
+        """Return a list of recent transactions with header details."""
+        rows = self._db.fetchall(
+            """SELECT *
+               FROM transactions
+               ORDER BY timestamp DESC
+               LIMIT ?""",
+            (limit,),
+        )
+        transactions = []
+
+        for row in rows:
+            transaction = Transaction.from_db_row(row)
+            transactions.append(transaction)
+            # Lazy load items only when needed to avoid overhead in the summary table
+        return transactions
 
     def get_transaction(self, transaction_id: int) -> Transaction:
         """Return transaction header details for a given transaction ID."""

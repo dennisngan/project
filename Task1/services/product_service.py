@@ -7,7 +7,7 @@ class ProductService:
         self._db = db
 
     def get_all_products(self) -> list[Product]:
-        sql = "SELECT * FROM products WHERE is_active = 1"
+        sql = "SELECT * FROM products"
         rows = self._db.fetchall(sql)
         return [Product.from_db_row(row) for row in rows]
 
@@ -16,28 +16,26 @@ class ProductService:
         row = self._db.fetchone(sql, (product_id,))
         return Product.from_db_row(row) if row else None
 
-    def create_product(self, name: str, price: float, cost_price: float, stock_quantity: int, category_id: int,
-                       is_active: bool) -> Product | None:
-        sql = """INSERT INTO products (name, price, cost_price, stock_quantity, category_id, is_active)
-                 VALUES (?, ?, ?, ?, ?, ?)"""
-        self._db.execute(sql, (name, price, cost_price, stock_quantity, category_id, int(is_active)))
+    def create_product(self, name: str, price: float, cost_price: float, stock_quantity: int,
+                       category_id: int) -> Product | None:
+        sql = """INSERT INTO products (name, price, cost_price, stock_quantity, category_id)
+                 VALUES (?, ?, ?, ?, ?)"""
+        self._db.execute(sql, (name, price, cost_price, stock_quantity, category_id))
         self._db.commit()
         new_id = self._db.get_last_insert_id()
         return self.get_product_by_id(new_id)
 
     def update_product(self, product_id: int, name: str, price: float, cost_price: float, stock_quantity: int,
-                       category_id: int,
-                       is_active: bool):
+                       category_id: int):
         sql = """UPDATE products
                  SET name=?,
                      price=?,
                      cost_price=?,
                      stock_quantity=?,
-                     category_id=?,
-                     is_active=?
+                     category_id=?
                  WHERE product_id = ?
               """
-        self._db.execute(sql, (name, price, cost_price, stock_quantity, category_id, int(is_active), product_id))
+        self._db.execute(sql, (name, price, cost_price, stock_quantity, category_id, product_id))
         self._db.commit()
         return self.get_product_by_id(product_id)
 
@@ -66,3 +64,15 @@ class ProductService:
         self._db.commit()
 
         return cursor.rowcount > 0
+
+    def search_product(self, query: str) -> list[Product]:
+        """Search products by name or ID. Case-insensitive substring match for name, exact match for ID."""
+        if not query:
+            return self.get_all_products()
+
+        q = query.lower()
+        match = []
+        for p in self.get_all_products():
+            if q in str(p.product_id) or q in p.name.lower():
+                match.append(p)
+        return match

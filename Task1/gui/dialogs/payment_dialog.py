@@ -192,8 +192,9 @@ class PaymentDialog(QDialog):
 
         self._update_toggle_styles()
 
-    def _update_change(self, text: str = ""):
+    def _update_change(self):
         try:
+            self._error_label.clear()
             tendered = self._tendered_input.numeric_value()
             change = tendered - self.total_amount
             self._change_label.setFont(StyleEngine.get_mono_font())
@@ -201,13 +202,13 @@ class PaymentDialog(QDialog):
                 self._change_label.setText(f"Change Due: HKD ${change:.1f}")
                 self._change_label.setStyleSheet(
                     f"color: {Colors.SUCCESS}; background-color: {Colors.SUCCESS_LIGHT}; "
-                    f"font-size: 18px; font-weight: bold; border-radius: 10px; padding: 20px 20px;"
+                    f"font-size: 18px; font-weight: bold; border-radius: 10px; padding: 17px 17px;"
                 )
             else:
                 self._change_label.setText(f"Remaining:  ${abs(change):.1f}")
                 self._change_label.setStyleSheet(
                     f"color: {Colors.DANGER}; background-color: {Colors.DANGER_LIGHT}; "
-                    f"font-size: 18px; font-weight: bold; border-radius: 10px; padding: 20px 20px;"
+                    f"font-size: 18px; font-weight: bold; border-radius: 10px; padding: 17px 17px;"
                 )
         except ValueError:
             self._change_label.setText("Change Due: HKD $0.0")
@@ -218,7 +219,7 @@ class PaymentDialog(QDialog):
         if self._cash_btn.isChecked():
             try:
                 tendered = self._tendered_input.numeric_value()
-                if tendered == 0.0 and self._tendered_input.text().strip() == HKDLineEdit.PREFIX.strip():
+                if tendered == 0.0 and self._tendered_input.text().strip() == HKDLineEdit.PREFIX:
                     self._show_error("Please enter the amount tendered.")
                     return
                 change_due = tendered - self.total_amount

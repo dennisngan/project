@@ -3,6 +3,8 @@ from functools import lru_cache
 from PySide6.QtGui import QFont
 from PySide6.QtWidgets import QApplication
 
+from config import STORE_NAME
+
 
 # ─── Color Palette ─────────────────────────────────────────────────────────────
 
@@ -469,6 +471,22 @@ class StyleEngine:
         QSplitter::handle {{
             background: {c.BORDER};
         }}
+        
+        QTableWidget[select="true"]::item:selected {{
+        background-color: #007AFF;   /* Colors.ACCENT */
+        color: #FFFFFF;              /* Colors.TEXT_ON_ACCENT */
+        font-weight: 600;
+        border: none;
+        }}
+        
+        QTableWidget[select="true"]::item:selected:!active {{
+                background-color: #2B8CFF;   /* slightly softer when window not focused */
+            color: #FFFFFF;
+        }}
+        
+        QTableWidget[select="true"]::item:hover:!selected {{
+                background-color: #EBF4FF;   /* keep hover lighter than selected */
+        }}
         """
 
     @staticmethod
@@ -486,7 +504,7 @@ class StyleEngine:
     @staticmethod
     def make_logo_label_text() -> str:
         """Return the store logo text."""
-        return "Quick Store"
+        return STORE_NAME
 
     @staticmethod
     def logo_stylesheet() -> str:

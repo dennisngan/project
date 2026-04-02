@@ -1,6 +1,7 @@
 from PySide6.QtCore import Qt, Signal
 from PySide6.QtWidgets import QWidget, QVBoxLayout, QFrame, QLabel, QLineEdit, QPushButton, QSizePolicy
 
+from config import STORE_NAME
 from database.db_manager import DatabaseManager
 from gui.styles import Colors, StyleEngine
 from services.auth_service import AuthService
@@ -115,7 +116,7 @@ class LoginWindow(QWidget):
         card_layout.addWidget(self._error_label)
 
         # Version footer
-        version_label = QLabel("v1.0.0 · © 2026 Quick Store")
+        version_label = QLabel(f"v1.0.0 · © 2026 {STORE_NAME}")
         version_label.setStyleSheet(f"color: {Colors.BORDER_STRONG}; font-size: 11px;")
         version_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
         card_layout.addWidget(version_label)

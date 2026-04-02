@@ -15,7 +15,6 @@ class Product(BaseModel):
             cost_price: float,
             stock_quantity: int,
             category_id: int,
-            is_active: bool = True,
     ):
         self.product_id = product_id
         self.name = name
@@ -23,7 +22,6 @@ class Product(BaseModel):
         self.cost_price = float(cost_price)
         self.stock_quantity = int(stock_quantity)
         self.category_id = category_id
-        self.is_active = is_active
 
     def __str__(self) -> str:
         return f"{self.name} — {Product.format_price(self.price)} (stock: {self.stock_quantity})"
@@ -58,6 +56,5 @@ class Product(BaseModel):
             cost_price=row["cost_price"],
             stock_quantity=row["stock_quantity"],
             category_id=row["category_id"] or 0,
-            is_active=bool(row["is_active"]),
         )
 

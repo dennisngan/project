@@ -52,50 +52,50 @@ def seed_products(db: DatabaseManager):
         return
 
     products = [
-        # (name,                    price,   cost,  stock, cat_id, is_active)
+        # (name,                    price,   cost,  stock, cat_id)
 
         # 1 - Drinks
-        ('Coca-Cola 355ml'         ,  8.5,   4.0,  200,  1, 1),
-        ('Pepsi 355ml'             ,  8.5,   4.0,  150,  1, 1),
-        ('Water 500ml'             ,  6.0,   2.5,  300,  1, 1),
-        ('Red Bull 250ml'          , 17.0,   9.0,   80,  1, 1),
-        ('Orange Juice 1L'         , 22.0,  12.0,   60,  1, 1),
+        ('Coca-Cola 355ml'         ,  8.5,   4.0,  200,  1),
+        ('Pepsi 355ml'             ,  8.5,   4.0,  150,  1),
+        ('Water 500ml'             ,  6.0,   2.5,  300,  1),
+        ('Red Bull 250ml'          , 17.0,   9.0,   80,  1),
+        ('Orange Juice 1L'         , 22.0,  12.0,   60,  1),
 
         # 2 - Snacks
-        ("Lay's Classic 200g"      , 22.0,  11.0,  120,  2, 1),
-        ('Doritos Nacho 200g'      , 22.0,  11.0,  110,  2, 1),
-        ('Kit Kat 45g'             , 11.0,   5.5,  150,  2, 1),
-        ('Snickers 52g'            , 11.0,   5.5,  140,  2, 1),
+        ("Lay's Classic 200g"      , 22.0,  11.0,  120,  2),
+        ('Doritos Nacho 200g'      , 22.0,  11.0,  110,  2),
+        ('Kit Kat 45g'             , 11.0,   5.5,  150,  2),
+        ('Snickers 52g'            , 11.0,   5.5,  140,  2),
 
         # 3 - Dairy
-        ('Milk 2L'                 , 32.0,  20.0,   50,  3, 1),
-        ('Cheddar Cheese 400g'     , 52.0,  32.0,   40,  3, 1),
-        ('Greek Yogurt 500g'       , 38.0,  22.0,   45,  3, 1),
+        ('Milk 2L'                 , 32.0,  20.0,   50,  3),
+        ('Cheddar Cheese 400g'     , 52.0,  32.0,   40,  3),
+        ('Greek Yogurt 500g'       , 38.0,  22.0,   45,  3),
 
         # 4 - Bakery
-        ('White Bread'             , 20.0,   9.0,   70,  4, 1),
-        ('Bagels 6pk'              , 32.0,  15.0,   35,  4, 1),
+        ('White Bread'             , 20.0,   9.0,   70,  4),
+        ('Bagels 6pk'              , 32.0,  15.0,   35,  4),
 
         # 5 - Frozen
-        ('Frozen Pizza'            , 62.0,  35.0,   30,  5, 1),
-        ('Ice Cream 1L'            , 45.0,  25.0,   25,  5, 1),
+        ('Frozen Pizza'            , 62.0,  35.0,   30,  5),
+        ('Ice Cream 1L'            , 45.0,  25.0,   25,  5),
 
         # 6 - Household
-        ('Paper Towels 2pk'        , 28.0,  13.0,   90,  6, 1),
-        ('Dish Soap 500ml'         , 25.0,  11.0,   75,  6, 1),
+        ('Paper Towels 2pk'        , 28.0,  13.0,   90,  6),
+        ('Dish Soap 500ml'         , 25.0,  11.0,   75,  6),
 
         # 7 - Personal Care
-        ('Shampoo 400ml'           , 52.0,  25.0,   55,  7, 1),
-        ('Toothpaste 120g'         , 28.0,  13.0,   60,  7, 1),
+        ('Shampoo 400ml'           , 52.0,  25.0,   55,  7),
+        ('Toothpaste 120g'         , 28.0,  13.0,   60,  7),
 
         # 8 - Other
-        ('Tylenol 24ct'            , 72.0,  38.0,   40,  8, 1),
-        ('Deli Ham 200g'           , 55.0,  35.0,   20,  8, 1),
+        ('Tylenol 24ct'            , 72.0,  38.0,   40,  8),
+        ('Deli Ham 200g'           , 55.0,  35.0,   20,  8),
     ]
 
     product_service = ProductService(db)
-    for name, price, cost, stock, cat_id, is_active in products:
-        product_service.create_product(name, price, cost, stock, cat_id, is_active)
+    for name, price, cost, stock, cat_id in products:
+        product_service.create_product(name, price, cost, stock, cat_id)
 
     print(f"Seeded {len(products)} products.")
 

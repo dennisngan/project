@@ -33,8 +33,10 @@ class Transaction(BaseModel):
     @classmethod
     def from_db_row(cls, row: sqlite3.Row) -> Self:
         """
-        create a Transaction instance from a database row (sqlite3.Row).
-        items will be loaded separately since they require a join query.
+        Polymorphic factory: reconstructs a Transaction from a DB row.
+        Selects the concrete PaymentMethod subclass (CardPayment or CashPayment)
+        based on the payment_type column — demonstrating runtime polymorphism.
+        Items are loaded separately because they require a JOIN query (lazy loading).
         """
         payment_type = row["payment_type"]
         total_amount = row["total_amount"]

@@ -8,6 +8,15 @@ from models.base import BaseModel
 
 @dataclass
 class Category(BaseModel):
+    """
+    Product category model.
+
+    Uses Python's @dataclass decorator to auto-generate __init__, __repr__, and __eq__,
+    while still inheriting the abstract from_db_row() contract from BaseModel (ABC).
+    The all() class method acts as a factory that returns a sentinel 'All' category
+    (id=0) used by the UI to represent the unfiltered view.
+    """
+
     category_id: int
     name: str
 

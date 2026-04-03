@@ -22,6 +22,15 @@ from services.transaction_service import TransactionService
 
 
 class MainWindow(QMainWindow):
+    """
+    Primary POS window used by cashiers to browse products and process sales.
+
+    Inherits from QMainWindow (Inheritance / Polymorphism via Qt event system).
+    Composes Cart, ProductService, TransactionService, and several custom widgets.
+    Uses a debounce QTimer on the search input to avoid querying on every keystroke.
+    Emits open_dashboard and logout_requested Signals to keep navigation logic in App.
+    """
+
     open_dashboard = Signal()
     logout_requested = Signal()
 

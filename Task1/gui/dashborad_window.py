@@ -34,6 +34,16 @@ class NumericTableItem(QTableWidgetItem):
 
 
 class DashboardWindow(QMainWindow):
+    """
+    Admin dashboard window providing product, transaction, and user management.
+
+    Inherits from QMainWindow (Inheritance).  The sidebar is built dynamically based
+    on the logged-in user's permissions (Role-Based Access Control), demonstrating
+    Polymorphism: the same window renders differently for a Manager vs a Cashier.
+    Static factory methods (_make_product_table, _make_summary_table, _make_users_table)
+    encapsulate table construction so each tab is self-contained and reusable.
+    """
+
     back_to_main_window = Signal()
     logout_requested = Signal()
 

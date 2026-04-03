@@ -1,3 +1,9 @@
+"""
+Centralized application configuration.
+All magic strings and tunable constants live here so they can be changed in one place
+(Modular Programming principle).
+"""
+
 DB_PATH = "smartpos.db"
 
 # Store identity (used on printed receipts)

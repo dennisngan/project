@@ -1,4 +1,13 @@
-import threading
+"""
+Payment method models using the Strategy design pattern.
+
+PaymentMethod is an Abstract Base Class (ABC) that defines the common interface.
+CashPayment and CardPayment are concrete strategies — each implements process_payment()
+and the payment_type property differently.  Code that handles payment (e.g. PaymentDialog,
+TransactionService) works against the PaymentMethod interface and is therefore open to new
+payment types without modification (Open/Closed principle).
+"""
+
 from abc import ABC, abstractmethod
 from time import sleep
 

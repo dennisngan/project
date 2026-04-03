@@ -6,6 +6,13 @@ from utils import password_utils
 
 
 class UserService:
+    """
+    Service layer for user account management.
+
+    Raises domain-specific custom exceptions (WeakPasswordException,
+    UsernameTakenException) to communicate validation failures to callers,
+    keeping business rules out of the GUI layer.
+    """
     def __init__(self, db: DatabaseManager):
         self._db = db
 

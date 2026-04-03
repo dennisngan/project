@@ -2,6 +2,15 @@ from PySide6.QtWidgets import QLineEdit
 
 
 class HKDLineEdit(QLineEdit):
+    """
+    Custom QLineEdit that enforces a non-deletable 'HKD$ ' prefix.
+
+    Inherits from QLineEdit (Inheritance / Polymorphism — overrides Qt's text-change
+    and cursor-position signals via slots).  The prefix is stored as a class-level
+    private constant (_PREFIX) and exposed read-only through a @property accessor
+    (Encapsulation).
+    """
+
     _PREFIX = "HKD$ "
 
     def __init__(self, parent=None):
@@ -28,6 +37,7 @@ class HKDLineEdit(QLineEdit):
             self.setCursorPosition(len(self._PREFIX))
 
     def numeric_value(self) -> float:
+        """Strip the prefix and return the numeric portion as a float (0.0 on invalid input)."""
         try:
             return float(self.text()[len(self._PREFIX):])
         except ValueError:

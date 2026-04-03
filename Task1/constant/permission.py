@@ -1,3 +1,11 @@
+"""
+Role-Based Access Control (RBAC) definitions.
+
+Permissions are modeled as an Enum (with str multiple inheritance).
+ROLE_PERMISSIONS maps each UserRole to the set of actions it may perform,
+keeping authorization rules in a single, auditable location.
+"""
+
 from enum import Enum
 
 from constant.enums import UserRole

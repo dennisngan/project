@@ -1,3 +1,11 @@
+"""
+Database seeding module.
+
+Populates the database with default categories, users, and products on first run.
+Each seed function is idempotent — it checks whether data already exists before
+inserting, so it is safe to call on every application start.
+"""
+
 from constant.enums import UserRole
 from database.db_manager import DatabaseManager
 from services.product_service import ProductService

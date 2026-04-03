@@ -41,6 +41,11 @@ class User(BaseModel):
 
     @classmethod
     def from_db_row(cls, row: sqlite3.Row) -> User:
+        """
+        Polymorphic factory method: returns a Manager or Cashier subclass instance
+        depending on the 'role' value stored in the database row.
+        Callers receive a User reference but get role-specific behavior at runtime.
+        """
         role = row["role"]
 
         if role == UserRole.MANAGER:
@@ -72,6 +77,12 @@ class User(BaseModel):
         return self.full_name.split()[0] if self.full_name else self.username
 
 class Manager(User):
+    """
+    Concrete subclass of User for manager accounts.
+    Inherits from User and hardcodes the MANAGER role via super().__init__().
+    Managers have MANAGE_PRODUCTS and MANAGE_USERS permissions.
+    """
+
     def __init__(
             self,
             user_id: int,
@@ -82,6 +93,12 @@ class Manager(User):
 
 
 class Cashier(User):
+    """
+    Concrete subclass of User for cashier accounts.
+    Inherits from User and hardcodes the CASHIER role via super().__init__().
+    Cashiers have no administrative permissions and can only process sales.
+    """
+
     def __init__(
             self,
             user_id: int,

@@ -7,6 +7,16 @@ from models.payment_method import PaymentMethod, CashPayment, CardPayment
 
 
 class PaymentDialog(QDialog):
+    """
+    Modal dialog for selecting and confirming a payment method.
+
+    Inherits from QDialog (Inheritance).  Uses a QStackedWidget to toggle between
+    the Cash and Card input forms.  On confirmation, instantiates the appropriate
+    concrete PaymentMethod subclass (CashPayment or CardPayment)
+    Callers retrieve the result via the payment_method property and
+    work against the shared PaymentMethod interface without knowing the concrete type.
+    """
+
     def __init__(self, total_amount: float, parent=None):
         super().__init__(parent)
         self.setFixedSize(420, 520)

@@ -1,3 +1,9 @@
+"""
+Entry point for the SmartPOS application.
+Manages the application lifecycle: initialises the database, seeds default data,
+and orchestrates window transitions (Login → Main POS → Dashboard) using Qt signals.
+"""
+
 import sys
 
 from PySide6.QtGui import QIcon
@@ -14,6 +20,14 @@ from utils.path_utils import get_app_base_dir
 
 
 class App:
+    """
+    Root application controller.
+
+    Demonstrates Composition: App owns the QApplication, DatabaseManager, and all
+    top-level windows, wiring them together through Qt signal/slot connections.
+    Window references are kept private (_) to enforce Encapsulation.
+    """
+
     def __init__(self):
         self._app = QApplication(sys.argv)
         self._app.setApplicationName("Smart POS")
@@ -75,6 +89,7 @@ class App:
         self._show_login()
 
     def _close_window(self, attr_name: str):
+        """Safely close and destroy a window, then clear its reference via setattr."""
         window = getattr(self, attr_name, None)
         if window is not None:
             window.close()

@@ -6,6 +6,16 @@ from models.base import BaseModel
 
 
 class Product(BaseModel):
+    """
+    Domain model for a store product.
+
+    Demonstrates multiple OOP concepts:
+    - Inheritance: extends BaseModel (ABC), implementing the abstract from_db_row() factory.
+    - Magic methods: __eq__ / __hash__ allow Product instances to be stored in sets and used as
+      dict keys; __lt__ makes them sortable (e.g. sorted(), min/max).
+    - Static method: format_price() is a pure utility that needs no instance or class state.
+    - Class method: from_db_row() is a factory that constructs a Product from a DB row.
+    """
 
     def __init__(
             self,
@@ -30,14 +40,17 @@ class Product(BaseModel):
         return f"<Product id={self.product_id} name={self.name!r}>"
 
     def __eq__(self, other) -> bool:
+        # Identity is based on product_id, not object reference
         if not isinstance(other, Product):
             return NotImplemented
         return self.product_id == other.product_id
 
     def __hash__(self) -> int:
+        # Must be defined alongside __eq__ so Products can be used as dict keys / in sets.
         return hash(self.product_id)
 
     def __lt__(self, other) -> bool:
+        # Enables alphabetical sorting (e.g. sorted(products)) without a separate key function.
         if not isinstance(other, Product):
             return NotImplemented
         return self.name.lower() < other.name.lower()
@@ -45,7 +58,7 @@ class Product(BaseModel):
     @staticmethod
     def format_price(amount: float) -> str:
         """Format a float as a currency string, e.g. 3.0 → '$3.0'."""
-        return f"${amount:,.1f}"
+        return f"HKD${amount:,.1f}"
 
     @classmethod
     def from_db_row(cls, row: sqlite3.Row) -> Product:

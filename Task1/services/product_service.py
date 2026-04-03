@@ -3,6 +3,14 @@ from models.product import Product
 
 
 class ProductService:
+    """
+    Service layer for all product-related database operations (CRUD).
+
+    Receives a DatabaseManager via Dependency Injection (constructor parameter)
+    rather than calling DatabaseManager.get_instance() directly — this keeps the
+    service testable and decoupled from the singleton.
+    All database references are stored as private attributes (_db) to enforce Encapsulation.
+    """
     def __init__(self, db: DatabaseManager):
         self._db = db
 

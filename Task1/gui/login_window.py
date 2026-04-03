@@ -8,6 +8,14 @@ from services.auth_service import AuthService
 
 
 class LoginWindow(QWidget):
+    """
+    Login screen for the SmartPOS application.
+
+    Inherits from QWidget (Inheritance).  Authenticates users via AuthService and
+    emits a login_success Qt Signal carrying the authenticated User object — decoupling
+    the login UI from the rest of the window navigation (handled in App).
+    """
+
     # Signal emitted when login is successful, passing the authenticated User object
     login_success = Signal(object)
 

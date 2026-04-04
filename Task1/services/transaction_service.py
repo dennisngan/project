@@ -49,6 +49,8 @@ class TransactionService:
             """ Insert line items and update stock in a single transaction. """
             for item in cart.get_items():
                 product = self._product_service.get_product_by_id(item.product_id)
+                if product is None:
+                    raise ValueError(f"Product ID {item.product_id} ('{item.name}') no longer exists.")
                 self._db.execute(
                     """INSERT INTO transaction_items (transaction_id,
                                                       product_id,
@@ -105,22 +107,29 @@ class TransactionService:
 
     def get_items_for_transaction(self, transaction_id: int) -> list[TransactionItem]:
         rows = self._db.fetchall(
-            """SELECT ti.transaction_item_id,
-                      ti.transaction_id,
-                      ti.product_id,
-                      p.name,
-                      ti.quantity,
-                      ti.unit_price,
-                      ti.line_total
-               FROM transaction_items ti
-                        LEFT JOIN products p ON ti.product_id = p.product_id
-               WHERE ti.transaction_id = ?""",
+            """SELECT transaction_item_id,
+                      transaction_id,
+                      product_id,
+                      product_name,
+                      quantity,
+                      unit_price,
+                      line_total
+               FROM transaction_items
+               WHERE transaction_id = ?""",
             (transaction_id,),
         )
         return [TransactionItem.from_db_row(row) for row in rows]
 
     def void_transaction(self, transaction_id: int) -> None:
         """Mark a transaction as voided and restore deducted stock."""
+        row = self._db.fetchone(
+            "SELECT is_void FROM transactions WHERE transaction_id = ?",
+            (transaction_id,),
+        )
+        if row is None:
+            raise ValueError(f"Transaction {transaction_id} not found.")
+        if row["is_void"]:
+            raise ValueError(f"Transaction {transaction_id} is already voided.")
         try:
             items = self._db.fetchall(
                 "SELECT product_id, quantity FROM transaction_items WHERE transaction_id = ?",

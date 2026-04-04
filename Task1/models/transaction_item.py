@@ -33,7 +33,7 @@ class TransactionItem(BaseModel):
             transaction_item_id=row["transaction_item_id"],
             transaction_id=row["transaction_id"],
             product_id=row["product_id"],
-            product_name=row["name"],
+            product_name=row["product_name"],
             quantity=row["quantity"],
             unit_price=row["unit_price"],
             line_total=row["line_total"],

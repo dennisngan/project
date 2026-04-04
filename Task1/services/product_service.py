@@ -19,7 +19,7 @@ class ProductService:
         rows = self._db.fetchall(sql)
         return [Product.from_db_row(row) for row in rows]
 
-    def get_product_by_id(self, product_id) -> Product | None:
+    def get_product_by_id(self, product_id: int) -> Product | None:
         sql = "SELECT * FROM products WHERE product_id = ?"
         row = self._db.fetchone(sql, (product_id,))
         return Product.from_db_row(row) if row else None
@@ -66,7 +66,7 @@ class ProductService:
             self._db.commit()
         return self.get_product_by_id(product_id)
 
-    def delete_product(self, product_id) -> bool:
+    def delete_product(self, product_id: int) -> bool:
         sql = "DELETE FROM products WHERE product_id = ?"
         cursor = self._db.execute(sql, (product_id,))
         self._db.commit()
@@ -74,13 +74,12 @@ class ProductService:
         return cursor.rowcount > 0
 
     def search_product(self, query: str) -> list[Product]:
-        """Search products by name or ID. Case-insensitive substring match for name, exact match for ID."""
-        if not query:
+        """Search products by name or ID. Case-insensitive substring match via SQL LIKE."""
+        if not query or not query.strip():
             return self.get_all_products()
-
-        q = query.lower()
-        match = []
-        for p in self.get_all_products():
-            if q in str(p.product_id) or q in p.name.lower():
-                match.append(p)
-        return match
+        like = f"%{query.strip()}%"
+        rows = self._db.fetchall(
+            "SELECT * FROM products WHERE LOWER(name) LIKE LOWER(?) OR CAST(product_id AS TEXT) LIKE ?",
+            (like, like),
+        )
+        return [Product.from_db_row(row) for row in rows]

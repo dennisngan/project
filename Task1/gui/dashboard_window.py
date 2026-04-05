@@ -170,7 +170,7 @@ class DashboardWindow(QMainWindow):
         self._prod_search.setFixedHeight(36)
         self._prod_search_timer = QTimer(self)
         self._prod_search_timer.setSingleShot(True)
-        self._prod_search_timer.setInterval(250) # Timer to debounce search input, so we don't query on every keystroke
+        self._prod_search_timer.setInterval(250)  # Timer to debounce search input, so we don't query on every keystroke
         self._prod_search_timer.timeout.connect(self._refresh_products_table)
         self._prod_search.textChanged.connect(lambda: self._prod_search_timer.start())
         toolbar.addWidget(self._prod_search)

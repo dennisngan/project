@@ -27,8 +27,7 @@ From-scratch Python implementations of two topics not covered in the introductor
 
 | Topic | Description |
 |---|---|
-| MaxHeap | Complete binary tree; largest element always at root — demonstrated with a priority task scheduler |
-| MinHeap | Complete binary tree; smallest element always at root — demonstrated with K-th largest element selection (`O(n log k)`) |
+| MinHeap | Complete binary tree; smallest element always at root — demonstrated with K-th largest element selection (`O(n log k)`) and OS priority task scheduling |
 | TimSort | Hybrid Insertion Sort + Merge Sort; default sort in Python and Java — demonstrated with stability and stress tests |
 
 No external dependencies required — pure Python 3.6+.

@@ -222,6 +222,30 @@ if __name__ == '__main__':
         answer = find_kth_largest(dataset, k)
         print(f"  Finding k={k} largest  ->  {k}-th largest element is {answer}")
 
+    # ------------------------------------------------------------------
+    # Test 6: Practical application — Priority Task Scheduler
+    # ------------------------------------------------------------------
+    print("\n--- Test 6: Application — Priority Task Scheduler ---")
+    print("  (smaller number = higher priority)\n")
+
+    tasks = [
+        (90, "Idle:     Background log rotation"),
+        (80, "Low:      Disk defragmentation"),
+        (10, "Critical: Hardware interrupt handler"),
+        (50, "Medium:   File system sync"),
+        (20, "High:     I/O device request"),
+    ]
+
+    scheduler = MinHeap()
+    for priority, name in tasks:
+        scheduler.insert((priority, name))
+        print(f"  Added [{priority:>3}] {name}")
+
+    print()
+    while not scheduler.is_empty():
+        priority, name = scheduler.remove()
+        print(f"  Processing [{priority:>3}] {name}")
+
     print("\n" + "=" * 60)
     print("  All tests complete.")
     print("=" * 60)
@@ -271,6 +295,21 @@ if __name__ == '__main__':
       Finding k=3 largest  ->  3-th largest element is 74
       Finding k=5 largest  ->  5-th largest element is 47
       Finding k=10 largest ->  10-th largest element is 6
+
+    --- Test 6: Application — Priority Task Scheduler ---
+      (smaller number = higher priority)
+
+      Added [ 90] Idle:     Background log rotation
+      Added [ 80] Low:      Disk defragmentation
+      Added [ 10] Critical: Hardware interrupt handler
+      Added [ 50] Medium:   File system sync
+      Added [ 20] High:     I/O device request
+
+      Processing [ 10] Critical: Hardware interrupt handler
+      Processing [ 20] High:     I/O device request
+      Processing [ 50] Medium:   File system sync
+      Processing [ 80] Low:      Disk defragmentation
+      Processing [ 90] Idle:     Background log rotation
 
     ============================================================
       All tests complete.

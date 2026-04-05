@@ -301,8 +301,6 @@ Double-click `SmartPOS.exe` to launch — no Python installation required on the
 
 ---
 
----
-
 ## 📁 Project Structure
 
 ```
@@ -349,7 +347,7 @@ Task1/
 ├── gui/
 │   ├── login_window.py         # Login screen
 │   ├── main_window.py          # Main POS window
-│   ├── dashborad_window.py     # Admin dashboard
+│   ├── dashboard_window.py     # Admin dashboard
 │   ├── styles.py               # Global stylesheet and colour palette
 │   ├── dialogs/
 │   │   ├── payment_dialog.py   # Cash / card payment dialog

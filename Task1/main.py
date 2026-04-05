@@ -11,7 +11,7 @@ from PySide6.QtWidgets import QApplication
 
 from database.db_manager import DatabaseManager
 from database.seed_data import run_seed
-from gui.dashborad_window import DashboardWindow
+from gui.dashboard_window import DashboardWindow
 from gui.login_window import LoginWindow
 from gui.main_window import MainWindow
 from gui.styles import StyleEngine

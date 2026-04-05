@@ -186,44 +186,41 @@ if __name__ == '__main__':
     print(f"  Is empty after remove? : {empty_heap.is_empty()}")
 
     # ------------------------------------------------------------------
-    # Test 5: Practical application — K-th smallest element selection
+    # Test 5: Practical application — K-th largest element selection
     # ------------------------------------------------------------------
-    # Finding the k-th smallest element in an unsorted list is a classic
-    # use case for a MinHeap.  Insert all elements into the heap, then
-    # call remove() exactly k times.  The last removed value is the
-    # k-th smallest.
+    # Finding the k-th largest element using a size-limited MinHeap:
+    # Insert each element and immediately evict the smallest if the
+    # heap exceeds size k.  After processing all elements the heap
+    # contains exactly the k largest values, and the root (minimum
+    # of those k values) is the k-th largest overall.
     #
-    # Time complexity: O(n log n) for n insertions + O(k log n) for
-    # k removals = O((n + k) log n).  For small k this is efficient
-    # and avoids fully sorting the data.
+    # Time complexity: O(n log k) — each of the n insertions costs
+    # O(log k) because the heap never grows beyond k elements.
+    # This is more efficient than a full sort when k << n.
     # ------------------------------------------------------------------
-    print("\n--- Test 5: Application — K-th Smallest Element Selection ---")
+    print("\n--- Test 5: Application — K-th Largest Element Selection ---")
 
     dataset = [47, 12, 85, 33, 6, 91, 23, 58, 74, 39]
     print(f"  Dataset: {dataset}\n")
 
 
-    def find_kth_smallest(data, k):
+    def find_kth_largest(arr, K):
         """
-        Use a MinHeap to find the k-th smallest element.
-        Insert all values, then remove k times — the k-th removal
-        is the k-th smallest element.
+        Use a size-limited MinHeap to find the K-th largest element.
+        Insert each value; if the heap grows beyond K, evict the
+        smallest.  The root of the final heap is the K-th largest.
         """
-        heap = MinHeap()
-        for val in data:
-            heap.insert(val)
-
-        result = None
-        for i in range(1, k + 1):
-            result = heap.remove()
-            print(f"    Remove #{i}: {result}")
-        return result
+        min_heap = MinHeap()
+        for val in arr:
+            min_heap.insert(val)
+            if min_heap.size() > K:
+                min_heap.remove()
+        return min_heap.peek()
 
 
     for k in [1, 3, 5, len(dataset)]:
-        print(f"  Finding k={k} smallest:")
-        answer = find_kth_smallest(dataset, k)
-        print(f"  -> The {k}-th smallest element is {answer}\n")
+        answer = find_kth_largest(dataset, k)
+        print(f"  Finding k={k} largest  ->  {k}-th largest element is {answer}")
 
     print("\n" + "=" * 60)
     print("  All tests complete.")
@@ -267,39 +264,13 @@ if __name__ == '__main__':
       Remove single element  : 42
       Is empty after remove? : True
 
-    --- Test 5: Application — K-th Smallest Element Selection ---
+    --- Test 5: Application — K-th Largest Element Selection ---
       Dataset: [47, 12, 85, 33, 6, 91, 23, 58, 74, 39]
 
-      Finding k=1 smallest:
-        Remove #1: 6
-      -> The 1-th smallest element is 6
-
-      Finding k=3 smallest:
-        Remove #1: 6
-        Remove #2: 12
-        Remove #3: 23
-      -> The 3-th smallest element is 23
-
-      Finding k=5 smallest:
-        Remove #1: 6
-        Remove #2: 12
-        Remove #3: 23
-        Remove #4: 33
-        Remove #5: 39
-      -> The 5-th smallest element is 39
-
-      Finding k=10 smallest:
-        Remove #1: 6
-        Remove #2: 12
-        Remove #3: 23
-        Remove #4: 33
-        Remove #5: 39
-        Remove #6: 47
-        Remove #7: 58
-        Remove #8: 74
-        Remove #9: 85
-        Remove #10: 91
-      -> The 10-th smallest element is 91
+      Finding k=1 largest  ->  1-th largest element is 91
+      Finding k=3 largest  ->  3-th largest element is 74
+      Finding k=5 largest  ->  5-th largest element is 47
+      Finding k=10 largest ->  10-th largest element is 6
 
     ============================================================
       All tests complete.

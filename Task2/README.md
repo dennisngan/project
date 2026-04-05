@@ -2,8 +2,6 @@
 
 A from-scratch Python implementation of the **Heap** data structure (MaxHeap & MinHeap) and the **TimSort** sorting algorithm.
 
-> **Self-Study Report — 8090SEF**
-
 ## 📁 Project Structure
 
 ```
@@ -22,7 +20,7 @@ No dependencies — pure Python 3.6+. Run each file directly:
 
 ```bash
 python max_heap.py   # MaxHeap demo + priority task scheduler
-python min_heap.py   # MinHeap demo + K-th smallest element selection
+python min_heap.py   # MinHeap demo + K-th largest element selection
 python timsort.py    # TimSort demo + stability & stress tests
 ```
 
@@ -46,20 +44,15 @@ python timsort.py    # TimSort demo + stability & stress tests
   Processing [ 10] Low: Clean desk
 ```
 
-### 🔻 MinHeap — K-th Smallest Element Selection
+### 🔻 MinHeap — K-th Largest Element Selection
 
 ```
   Dataset: [47, 12, 85, 33, 6, 91, 23, 58, 74, 39]
 
-  Finding k=1 smallest:
-    Remove #1: 6
-  -> The 1-th smallest element is 6
-
-  Finding k=3 smallest:
-    Remove #1: 6
-    Remove #2: 12
-    Remove #3: 23
-  -> The 3-th smallest element is 23
+  Finding k=1 largest  ->  1-th largest element is 91
+  Finding k=3 largest  ->  3-th largest element is 74
+  Finding k=5 largest  ->  5-th largest element is 47
+  Finding k=10 largest ->  10-th largest element is 6
 ```
 
 ### ⚡ TimSort — Stability Test

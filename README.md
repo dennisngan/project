@@ -6,16 +6,18 @@ This repository contains two tasks for the COMP8090 Data Structures and Algorith
 
 ## 📦 Task 1 - Smart POS
 
-A GUI-based Point of Sale (POS) system for small stores and retailers, built with Python and PySide6.
+A GUI-based Point of Sale (POS) system for small retail stores, built with Python and PySide6.
 
-**🛠️ Tech Stack:** Python 3.12, PySide6, SQLite, bcrypt
+**🛠️ Tech Stack:** Python 3.12, PySide6, SQLite, bcrypt, PyInstaller
 
 **✨ Key Features:**
-- User authentication with role-based access control
-- Product and inventory management (WIP)
-- Sales and receipt generation (WIP)
+- Secure login with bcrypt password hashing and role-based access control (Manager / Cashier)
+- Product browsing with real-time category filtering and keyword search
+- Shopping cart with live stock validation and cash / card payment flows
+- Automatic PDF receipt generation after every successful checkout
+- Manager dashboard: product management, full transaction history, void transactions, user account management
 
-See [Task1/README.md](Task1/README.md) for setup and usage instructions.
+See [Task1/README.md](Task1/README.md) for architecture, setup, and usage instructions.
 
 ---
 
@@ -25,9 +27,10 @@ From-scratch Python implementations of two topics not covered in the introductor
 
 | Topic | Description |
 |---|---|
-| MaxHeap & MinHeap | Complete binary tree with efficient insert/extract operations |
-| TimSort | Hybrid Insertion Sort + Merge Sort; default sort in Python and Java |
+| MaxHeap | Complete binary tree; largest element always at root — demonstrated with a priority task scheduler |
+| MinHeap | Complete binary tree; smallest element always at root — demonstrated with K-th largest element selection (`O(n log k)`) |
+| TimSort | Hybrid Insertion Sort + Merge Sort; default sort in Python and Java — demonstrated with stability and stress tests |
 
-No external dependencies required - pure Python 3.6+.
+No external dependencies required — pure Python 3.6+.
 
 See [Task2/README.md](Task2/README.md) for usage and example output.

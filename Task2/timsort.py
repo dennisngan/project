@@ -229,7 +229,7 @@ if __name__ == '__main__':
     # ------------------------------------------------------------------
     # Test 6: Larger dataset to exercise merge phase
     # ------------------------------------------------------------------
-    print("\n--- Test 6: Larger dataset (500 elements) ---")
+    print("\n--- Test 6: Larger dataset (500 elements) for stress test---")
     import random
 
     random.seed(2024)  # Fixed seed for reproducible output
@@ -318,7 +318,7 @@ if __name__ == '__main__':
       Empty list before    : []
       Empty list after     : []
     
-    --- Test 6: Larger dataset (500 elements) ---
+    --- Test 6: Larger dataset (500 elements) for stress test---
       Before (first 15): [241, 94, 373, 297, 156, 103, 455, 371, 210, 388, 367, 389, 136, 273, 126, 326, 417, 377, 256, 182, 213, 270, 373, 316, 494, 112, 159, 279, 361, 170] ...
       After  (first 15): [1, 1, 2, 3, 6, 8, 10, 13, 14, 15, 16, 20, 20, 21, 24, 26, 28, 28, 29, 30, 32, 34, 35, 37, 38, 39, 42, 45, 45, 48] ...
       Correctly sorted?  True

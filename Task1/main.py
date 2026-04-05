@@ -16,22 +16,18 @@ from gui.login_window import LoginWindow
 from gui.main_window import MainWindow
 from gui.styles import StyleEngine
 from models.user import User
-from utils.path_utils import get_app_base_dir
+from utils.path_utils import get_resource_base_dir
 
 
 class App:
     """
     Root application controller.
-
-    Demonstrates Composition: App owns the QApplication, DatabaseManager, and all
-    top-level windows, wiring them together through Qt signal/slot connections.
-    Window references are kept private (_) to enforce Encapsulation.
     """
 
     def __init__(self):
         self._app = QApplication(sys.argv)
         self._app.setApplicationName("Smart POS")
-        icon_path = get_app_base_dir() / "asset" / "store_icon.ico"
+        icon_path = get_resource_base_dir() / "asset" / "store_icon.ico"
         self._app.setWindowIcon(QIcon(str(icon_path)))
 
         # Apply global stylesheet

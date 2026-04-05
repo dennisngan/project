@@ -3,8 +3,9 @@ Centralized application configuration.
 All magic strings and tunable constants live here so they can be changed in one place
 (Modular Programming principle).
 """
+from utils.path_utils import get_runtime_base_dir
 
-DB_PATH = "smartpos.db"
+DB_PATH = str(get_runtime_base_dir() / "smartpos.db")
 
 # Store identity (used on printed receipts)
 STORE_NAME = "Quick Store"

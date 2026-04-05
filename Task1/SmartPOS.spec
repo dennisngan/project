@@ -37,3 +37,10 @@ exe = EXE(
     codesign_identity=None,
     entitlements_file=None,
 )
+
+app = BUNDLE(
+    exe,
+    name='SmartPOS.app',
+    icon='asset/store_icon.icns',
+    bundle_identifier='com.dennisngan.smartpos',
+)

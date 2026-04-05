@@ -4,7 +4,7 @@ from PySide6.QtCore import Qt
 from PySide6.QtWidgets import QDialog, QVBoxLayout, QLabel, QScrollArea, QPushButton
 
 from gui.styles import Colors, StyleEngine
-from utils.path_utils import get_app_base_dir
+from utils.path_utils import get_runtime_base_dir
 
 
 class ReceiptDialog(QDialog):
@@ -68,7 +68,7 @@ class ReceiptDialog(QDialog):
 
             # Create dated folder and PDF path
             date_str = datetime.now().strftime("%Y%m%d")
-            base_dir = get_app_base_dir()
+            base_dir = get_runtime_base_dir()
             folder = base_dir / "receipts" / date_str
             folder.mkdir(parents=True, exist_ok=True)
             pdf_path = folder / f"receipt_{transaction_id}.pdf"

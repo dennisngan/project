@@ -27,7 +27,7 @@ class MainWindow(QMainWindow):
 
     Inherits from QMainWindow (Inheritance / Polymorphism via Qt event system).
     Composes Cart, ProductService, TransactionService, and several custom widgets.
-    Uses a debounce QTimer on the search input to avoid querying on every keystroke.
+    Uses a debounced QTimer on the search input to avoid querying on every keystroke.
     Emits open_dashboard and logout_requested Signals to keep navigation logic in App.
     """
 

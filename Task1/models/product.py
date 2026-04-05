@@ -8,13 +8,6 @@ from models.base import BaseModel
 class Product(BaseModel):
     """
     Domain model for a store product.
-
-    Demonstrates multiple OOP concepts:
-    - Inheritance: extends BaseModel (ABC), implementing the abstract from_db_row() factory.
-    - Magic methods: __eq__ / __hash__ allow Product instances to be stored in sets and used as
-      dict keys; __lt__ makes them sortable (e.g. sorted(), min/max).
-    - Static method: format_price() is a pure utility that needs no instance or class state.
-    - Class method: from_db_row() is a factory that constructs a Product from a DB row.
     """
 
     def __init__(

@@ -229,7 +229,7 @@ class PaymentDialog(QDialog):
         if self._cash_btn.isChecked():
             try:
                 tendered = self._tendered_input.numeric_value()
-                if tendered == 0.0 and self._tendered_input.text().strip() == HKDLineEdit.PREFIX:
+                if tendered == 0.0 and self._tendered_input.text().strip() == self._tendered_input.PREFIX:
                     self._show_error("Please enter the amount tendered.")
                     return
                 change_due = tendered - self.total_amount

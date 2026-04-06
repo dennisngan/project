@@ -50,7 +50,6 @@ def seed_users(db: DatabaseManager):
     for username, password, full_name, role in users:
         user_service.create_user(username, full_name, password, UserRole(role))
 
-    print(f"Seeded {len(users)} users.")
 
 
 def seed_products(db: DatabaseManager):
@@ -105,7 +104,6 @@ def seed_products(db: DatabaseManager):
     for name, price, cost, stock, cat_id in products:
         product_service.create_product(name, price, cost, stock, cat_id)
 
-    print(f"Seeded {len(products)} products.")
 
 
 def run_seed():
@@ -115,7 +113,5 @@ def run_seed():
         seed_categories(db)
         seed_users(db)
         seed_products(db)
-        print("Database seeding complete.")
     except Exception as e:
-        print(f"Seeding failed: {e}")
-        raise
+        raise RuntimeError(f"Seeding failed: {e}") from e

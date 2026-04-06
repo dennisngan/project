@@ -89,8 +89,7 @@ class DashboardWindow(QMainWindow):
 
         sidebar_items = []
         # Dynamic sidebar based on user permissions
-        if self._user.can_manage_products():
-            sidebar_items.append("  📦  Products")
+        sidebar_items.append("  📦  Products")
         sidebar_items.append("  📊  Transactions")
         if self._user.can_manage_user():
             sidebar_items.append("  👤  Users")
@@ -524,7 +523,7 @@ class DashboardWindow(QMainWindow):
 
         layout.addWidget(table)
 
-        total_lbl = QLabel(f"Total: HKD${transaction.payment.total_amount}")
+        total_lbl = QLabel(f"Total: HKD${transaction.payment.total_amount:.1f}")
         total_lbl.setStyleSheet(
             f"font-size: 14px; font-weight: bold; color: {Colors.ACCENT};"
         )

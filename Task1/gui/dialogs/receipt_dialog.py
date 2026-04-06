@@ -72,8 +72,6 @@ class ReceiptDialog(QDialog):
             folder = base_dir / "receipts" / date_str
             folder.mkdir(parents=True, exist_ok=True)
             pdf_path = folder / f"receipt_{transaction_id}.pdf"
-            print(pdf_path)
-
             RECEIPT_WIDTH_MM = 140.0
             MARGIN_MM = 10.0
 

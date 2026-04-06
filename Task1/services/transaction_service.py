@@ -91,7 +91,7 @@ class TransactionService:
             # Lazy load items only when needed to avoid overhead in the summary table
         return transactions
 
-    def get_transaction(self, transaction_id: int) -> Transaction:
+    def get_transaction(self, transaction_id: int) -> Transaction | None:
         """Return transaction header details for a given transaction ID."""
         row = self._db.fetchone(
             """SELECT *

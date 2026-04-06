@@ -461,7 +461,7 @@ class MainWindow(QMainWindow):
         self._refresh_cart_table()
 
     def _update_total(self):
-        self._total_lbl.setText(f"${self._cart.get_total():.2f}")
+        self._total_lbl.setText(f"HKD${self._cart.get_total():.1f}")
 
     def _on_pay_btn_clicked(self):
         if self._cart.is_empty():
@@ -479,11 +479,15 @@ class MainWindow(QMainWindow):
         if payment is None:
             return
 
-        tx_id = self.transaction_service.save_transaction(
-            self._user.user_id,
-            self._cart,
-            payment
-        )
+        try:
+            tx_id = self.transaction_service.save_transaction(
+                self._user.user_id,
+                self._cart,
+                payment
+            )
+        except Exception as e:
+            QMessageBox.critical(self, "Transaction Error", f"Failed to save transaction: {e}")
+            return
 
         transaction = self.transaction_service.get_transaction(tx_id)
 

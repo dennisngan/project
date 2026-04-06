@@ -1,7 +1,7 @@
 from constant.enums import UserRole
 from database.db_manager import DatabaseManager
 from exceptions import WeakPasswordException, UsernameTakenException
-from models.user import User
+from models.user import User, Manager, Cashier
 from utils import password_utils
 
 
@@ -42,7 +42,9 @@ class UserService:
 
         user_id = self._db.get_last_insert_id()
         self._db.commit()
-        return User(user_id, username, full_name=full_name, role=role)
+        if role == UserRole.MANAGER:
+            return Manager(user_id, username, full_name=full_name)
+        return Cashier(user_id, username, full_name=full_name)
 
     def get_user_by_username(self, username: str) -> User | None:
         """Return a User object for the given username, or None if not found."""

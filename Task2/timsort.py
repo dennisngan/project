@@ -234,9 +234,9 @@ if __name__ == '__main__':
 
     random.seed(2024)  # Fixed seed for reproducible output
     data6 = [random.randint(1, 500) for _ in range(500)]
-    print(f"  Before (first 15): {data6[:30]} ...")
+    print(f"  Before (first 30): {data6[:30]} ...")
     timsort(data6)
-    print(f"  After  (first 15): {data6[:30]} ...")
+    print(f"  After  (first 30): {data6[:30]} ...")
     print(f"  Correctly sorted?  {data6 == sorted(data6)}")
 
     # ------------------------------------------------------------------
@@ -319,8 +319,8 @@ if __name__ == '__main__':
       Empty list after     : []
     
     --- Test 6: Larger dataset (500 elements) for stress test---
-      Before (first 15): [241, 94, 373, 297, 156, 103, 455, 371, 210, 388, 367, 389, 136, 273, 126, 326, 417, 377, 256, 182, 213, 270, 373, 316, 494, 112, 159, 279, 361, 170] ...
-      After  (first 15): [1, 1, 2, 3, 6, 8, 10, 13, 14, 15, 16, 20, 20, 21, 24, 26, 28, 28, 29, 30, 32, 34, 35, 37, 38, 39, 42, 45, 45, 48] ...
+      Before (first 30): [241, 94, 373, 297, 156, 103, 455, 371, 210, 388, 367, 389, 136, 273, 126, 326, 417, 377, 256, 182, 213, 270, 373, 316, 494, 112, 159, 279, 361, 170] ...
+      After  (first 30): [1, 1, 2, 3, 6, 8, 10, 13, 14, 15, 16, 20, 20, 21, 24, 26, 28, 28, 29, 30, 32, 34, 35, 37, 38, 39, 42, 45, 45, 48] ...
       Correctly sorted?  True
     
     --- Test 7: Stability — equal keys keep original order ---

@@ -7,7 +7,7 @@ and orchestrates window transitions (Login → Main POS → Dashboard) using Qt 
 import sys
 
 from PySide6.QtGui import QIcon
-from PySide6.QtWidgets import QApplication
+from PySide6.QtWidgets import QApplication, QMessageBox
 
 from database.db_manager import DatabaseManager
 from database.seed_data import run_seed
@@ -64,6 +64,10 @@ class App:
         if self._dashboard_window:
             self._dashboard_window.hide()
             self._dashboard_window = None  # Force dashboard window to be recreated on next open
+        if self._main_window is None:
+            QMessageBox.warning(None, "Login credentials error", "Unable to open main window. Please log in again.")
+            self._show_login()
+            return
         self._main_window.show()
         self._main_window.invalidate_cache()
 
@@ -74,6 +78,10 @@ class App:
             self._dashboard_window.logout_requested.connect(self._on_logout)
         if self._main_window:
             self._main_window.hide()
+        if self._dashboard_window is None:
+            QMessageBox.warning(None, "Login credentials error", "Unable to open dashboard. Please log in again.")
+            self._show_login()
+            return
         self._dashboard_window.show()
 
     def _on_logout(self):

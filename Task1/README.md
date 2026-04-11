@@ -6,7 +6,7 @@ A GUI-based Point of Sale (POS) system for small retail stores, built with Pytho
 
 ## 🎬 Introduction Video
 
-[=> Watch on YouTube](https://www.youtube.com/watch?v=0yagss20PAY)
+[=> Watch on YouTube](https://www.youtube.com/watch?v=g_Y_kkHx37o)
 
 ---
 

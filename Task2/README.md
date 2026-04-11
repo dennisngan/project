@@ -26,7 +26,7 @@ python timsort.py    # TimSort demo + stability & stress tests
 
 ## 🎬 Introduction Video
 
-[=> Watch on YouTube](https://www.youtube.com/watch?v=ux51_0-VaUU)
+[=> Watch on YouTube](https://www.youtube.com/watch?v=Z0nfAPPmW9A)
 
 ---
 
